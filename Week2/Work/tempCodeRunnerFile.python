@@ -1,0 +1,11 @@
+i=0+1j
+c=1e-6
+import cmath
+i1=100/(5000+1/(i*2*3.14*60*c))
+i2=100/(5000+1/(i*2*3.14*90*c))
+print(i1)
+print(i2)
+print(abs(i1))
+print(cmath.phase(i1))
+print(abs(i2))
+print(cmath.phase(i2))

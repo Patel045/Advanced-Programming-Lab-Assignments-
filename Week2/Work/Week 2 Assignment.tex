@@ -1,0 +1,1180 @@
+\documentclass[11pt]{article}
+
+    \usepackage[breakable]{tcolorbox}
+    \usepackage{parskip} % Stop auto-indenting (to mimic markdown behaviour)
+    
+
+    % Basic figure setup, for now with no caption control since it's done
+    % automatically by Pandoc (which extracts ![](path) syntax from Markdown).
+    \usepackage{graphicx}
+    % Maintain compatibility with old templates. Remove in nbconvert 6.0
+    \let\Oldincludegraphics\includegraphics
+    % Ensure that by default, figures have no caption (until we provide a
+    % proper Figure object with a Caption API and a way to capture that
+    % in the conversion process - todo).
+    \usepackage{caption}
+    \DeclareCaptionFormat{nocaption}{}
+    \captionsetup{format=nocaption,aboveskip=0pt,belowskip=0pt}
+
+    \usepackage{float}
+    \floatplacement{figure}{H} % forces figures to be placed at the correct location
+    \usepackage{xcolor} % Allow colors to be defined
+    \usepackage{enumerate} % Needed for markdown enumerations to work
+    \usepackage{geometry} % Used to adjust the document margins
+    \usepackage{amsmath} % Equations
+    \usepackage{amssymb} % Equations
+    \usepackage{textcomp} % defines textquotesingle
+    % Hack from http://tex.stackexchange.com/a/47451/13684:
+    \AtBeginDocument{%
+        \def\PYZsq{\textquotesingle}% Upright quotes in Pygmentized code
+    }
+    \usepackage{upquote} % Upright quotes for verbatim code
+    \usepackage{eurosym} % defines \euro
+
+    \usepackage{iftex}
+    \ifPDFTeX
+        \usepackage[T1]{fontenc}
+        \IfFileExists{alphabeta.sty}{
+              \usepackage{alphabeta}
+          }{
+              \usepackage[mathletters]{ucs}
+              \usepackage[utf8x]{inputenc}
+          }
+    \else
+        \usepackage{fontspec}
+        \usepackage{unicode-math}
+    \fi
+
+    \usepackage{fancyvrb} % verbatim replacement that allows latex
+    \usepackage{grffile} % extends the file name processing of package graphics
+                         % to support a larger range
+    \makeatletter % fix for old versions of grffile with XeLaTeX
+    \@ifpackagelater{grffile}{2019/11/01}
+    {
+      % Do nothing on new versions
+    }
+    {
+      \def\Gread@@xetex#1{%
+        \IfFileExists{"\Gin@base".bb}%
+        {\Gread@eps{\Gin@base.bb}}%
+        {\Gread@@xetex@aux#1}%
+      }
+    }
+    \makeatother
+    \usepackage[Export]{adjustbox} % Used to constrain images to a maximum size
+    \adjustboxset{max size={0.9\linewidth}{0.9\paperheight}}
+
+    % The hyperref package gives us a pdf with properly built
+    % internal navigation ('pdf bookmarks' for the table of contents,
+    % internal cross-reference links, web links for URLs, etc.)
+    \usepackage{hyperref}
+    % The default LaTeX title has an obnoxious amount of whitespace. By default,
+    % titling removes some of it. It also provides customization options.
+    \usepackage{titling}
+    \usepackage{longtable} % longtable support required by pandoc >1.10
+    \usepackage{booktabs}  % table support for pandoc > 1.12.2
+    \usepackage{array}     % table support for pandoc >= 2.11.3
+    \usepackage{calc}      % table minipage width calculation for pandoc >= 2.11.1
+    \usepackage[inline]{enumitem} % IRkernel/repr support (it uses the enumerate* environment)
+    \usepackage[normalem]{ulem} % ulem is needed to support strikethroughs (\sout)
+                                % normalem makes italics be italics, not underlines
+    \usepackage{mathrsfs}
+    
+
+    
+    % Colors for the hyperref package
+    \definecolor{urlcolor}{rgb}{0,.145,.698}
+    \definecolor{linkcolor}{rgb}{.71,0.21,0.01}
+    \definecolor{citecolor}{rgb}{.12,.54,.11}
+
+    % ANSI colors
+    \definecolor{ansi-black}{HTML}{3E424D}
+    \definecolor{ansi-black-intense}{HTML}{282C36}
+    \definecolor{ansi-red}{HTML}{E75C58}
+    \definecolor{ansi-red-intense}{HTML}{B22B31}
+    \definecolor{ansi-green}{HTML}{00A250}
+    \definecolor{ansi-green-intense}{HTML}{007427}
+    \definecolor{ansi-yellow}{HTML}{DDB62B}
+    \definecolor{ansi-yellow-intense}{HTML}{B27D12}
+    \definecolor{ansi-blue}{HTML}{208FFB}
+    \definecolor{ansi-blue-intense}{HTML}{0065CA}
+    \definecolor{ansi-magenta}{HTML}{D160C4}
+    \definecolor{ansi-magenta-intense}{HTML}{A03196}
+    \definecolor{ansi-cyan}{HTML}{60C6C8}
+    \definecolor{ansi-cyan-intense}{HTML}{258F8F}
+    \definecolor{ansi-white}{HTML}{C5C1B4}
+    \definecolor{ansi-white-intense}{HTML}{A1A6B2}
+    \definecolor{ansi-default-inverse-fg}{HTML}{FFFFFF}
+    \definecolor{ansi-default-inverse-bg}{HTML}{000000}
+
+    % common color for the border for error outputs.
+    \definecolor{outerrorbackground}{HTML}{FFDFDF}
+
+    % commands and environments needed by pandoc snippets
+    % extracted from the output of `pandoc -s`
+    \providecommand{\tightlist}{%
+      \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+    \DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+    % Add ',fontsize=\small' for more characters per line
+    \newenvironment{Shaded}{}{}
+    \newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.56,0.13,0.00}{{#1}}}
+    \newcommand{\DecValTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\FloatTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\CharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\StringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\CommentTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textit{{#1}}}}
+    \newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{{#1}}}
+    \newcommand{\AlertTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.02,0.16,0.49}{{#1}}}
+    \newcommand{\RegionMarkerTok}[1]{{#1}}
+    \newcommand{\ErrorTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\NormalTok}[1]{{#1}}
+
+    % Additional commands for more recent versions of Pandoc
+    \newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.53,0.00,0.00}{{#1}}}
+    \newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.73,0.40,0.53}{{#1}}}
+    \newcommand{\ImportTok}[1]{{#1}}
+    \newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.73,0.13,0.13}{\textit{{#1}}}}
+    \newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\VariableTok}[1]{\textcolor[rgb]{0.10,0.09,0.49}{{#1}}}
+    \newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.40,0.40,0.40}{{#1}}}
+    \newcommand{\BuiltInTok}[1]{{#1}}
+    \newcommand{\ExtensionTok}[1]{{#1}}
+    \newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.74,0.48,0.00}{{#1}}}
+    \newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.49,0.56,0.16}{{#1}}}
+    \newcommand{\InformationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\WarningTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+
+
+    % Define a nice break command that doesn't care if a line doesn't already
+    % exist.
+    \def\br{\hspace*{\fill} \\* }
+    % Math Jax compatibility definitions
+    \def\gt{>}
+    \def\lt{<}
+    \let\Oldtex\TeX
+    \let\Oldlatex\LaTeX
+    \renewcommand{\TeX}{\textrm{\Oldtex}}
+    \renewcommand{\LaTeX}{\textrm{\Oldlatex}}
+    % Document parameters
+    % Document title
+    \title{Applied Programming Lab - Week 2 Assignment \\
+    Aayush Patel EE21B003
+    }
+    
+    
+    
+    
+    
+% Pygments definitions
+\makeatletter
+\def\PY@reset{\let\PY@it=\relax \let\PY@bf=\relax%
+    \let\PY@ul=\relax \let\PY@tc=\relax%
+    \let\PY@bc=\relax \let\PY@ff=\relax}
+\def\PY@tok#1{\csname PY@tok@#1\endcsname}
+\def\PY@toks#1+{\ifx\relax#1\empty\else%
+    \PY@tok{#1}\expandafter\PY@toks\fi}
+\def\PY@do#1{\PY@bc{\PY@tc{\PY@ul{%
+    \PY@it{\PY@bf{\PY@ff{#1}}}}}}}
+\def\PY#1#2{\PY@reset\PY@toks#1+\relax+\PY@do{#2}}
+
+\@namedef{PY@tok@w}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.73,0.73}{##1}}}
+\@namedef{PY@tok@c}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cp}{\def\PY@tc##1{\textcolor[rgb]{0.61,0.40,0.00}{##1}}}
+\@namedef{PY@tok@k}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kp}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kt}{\def\PY@tc##1{\textcolor[rgb]{0.69,0.00,0.25}{##1}}}
+\@namedef{PY@tok@o}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@ow}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\@namedef{PY@tok@nb}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@nf}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@nc}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@nn}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@ne}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.80,0.25,0.22}{##1}}}
+\@namedef{PY@tok@nv}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@no}{\def\PY@tc##1{\textcolor[rgb]{0.53,0.00,0.00}{##1}}}
+\@namedef{PY@tok@nl}{\def\PY@tc##1{\textcolor[rgb]{0.46,0.46,0.00}{##1}}}
+\@namedef{PY@tok@ni}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.44,0.44,0.44}{##1}}}
+\@namedef{PY@tok@na}{\def\PY@tc##1{\textcolor[rgb]{0.41,0.47,0.13}{##1}}}
+\@namedef{PY@tok@nt}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@nd}{\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\@namedef{PY@tok@s}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sd}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@si}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.64,0.35,0.47}{##1}}}
+\@namedef{PY@tok@se}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.67,0.36,0.12}{##1}}}
+\@namedef{PY@tok@sr}{\def\PY@tc##1{\textcolor[rgb]{0.64,0.35,0.47}{##1}}}
+\@namedef{PY@tok@ss}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@sx}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@m}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@gh}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\@namedef{PY@tok@gu}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.50,0.00,0.50}{##1}}}
+\@namedef{PY@tok@gd}{\def\PY@tc##1{\textcolor[rgb]{0.63,0.00,0.00}{##1}}}
+\@namedef{PY@tok@gi}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.52,0.00}{##1}}}
+\@namedef{PY@tok@gr}{\def\PY@tc##1{\textcolor[rgb]{0.89,0.00,0.00}{##1}}}
+\@namedef{PY@tok@ge}{\let\PY@it=\textit}
+\@namedef{PY@tok@gs}{\let\PY@bf=\textbf}
+\@namedef{PY@tok@gp}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\@namedef{PY@tok@go}{\def\PY@tc##1{\textcolor[rgb]{0.44,0.44,0.44}{##1}}}
+\@namedef{PY@tok@gt}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.27,0.87}{##1}}}
+\@namedef{PY@tok@err}{\def\PY@bc##1{{\setlength{\fboxsep}{\string -\fboxrule}\fcolorbox[rgb]{1.00,0.00,0.00}{1,1,1}{\strut ##1}}}}
+\@namedef{PY@tok@kc}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kd}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kn}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kr}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@bp}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@fm}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@vc}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vg}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vi}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vm}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@sa}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sb}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sc}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@dl}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@s2}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sh}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@s1}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@mb}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mf}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mh}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mi}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@il}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mo}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@ch}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cm}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cpf}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@c1}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cs}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+
+\def\PYZbs{\char`\\}
+\def\PYZus{\char`\_}
+\def\PYZob{\char`\{}
+\def\PYZcb{\char`\}}
+\def\PYZca{\char`\^}
+\def\PYZam{\char`\&}
+\def\PYZlt{\char`\<}
+\def\PYZgt{\char`\>}
+\def\PYZsh{\char`\#}
+\def\PYZpc{\char`\%}
+\def\PYZdl{\char`\$}
+\def\PYZhy{\char`\-}
+\def\PYZsq{\char`\'}
+\def\PYZdq{\char`\"}
+\def\PYZti{\char`\~}
+% for compatibility with earlier versions
+\def\PYZat{@}
+\def\PYZlb{[}
+\def\PYZrb{]}
+\makeatother
+
+
+    % For linebreaks inside Verbatim environment from package fancyvrb.
+    \makeatletter
+        \newbox\Wrappedcontinuationbox
+        \newbox\Wrappedvisiblespacebox
+        \newcommand*\Wrappedvisiblespace {\textcolor{red}{\textvisiblespace}}
+        \newcommand*\Wrappedcontinuationsymbol {\textcolor{red}{\llap{\tiny$\m@th\hookrightarrow$}}}
+        \newcommand*\Wrappedcontinuationindent {3ex }
+        \newcommand*\Wrappedafterbreak {\kern\Wrappedcontinuationindent\copy\Wrappedcontinuationbox}
+        % Take advantage of the already applied Pygments mark-up to insert
+        % potential linebreaks for TeX processing.
+        %        {, <, #, %, $, ' and ": go to next line.
+        %        _, }, ^, &, >, - and ~: stay at end of broken line.
+        % Use of \textquotesingle for straight quote.
+        \newcommand*\Wrappedbreaksatspecials {%
+            \def\PYGZus{\discretionary{\char`\_}{\Wrappedafterbreak}{\char`\_}}%
+            \def\PYGZob{\discretionary{}{\Wrappedafterbreak\char`\{}{\char`\{}}%
+            \def\PYGZcb{\discretionary{\char`\}}{\Wrappedafterbreak}{\char`\}}}%
+            \def\PYGZca{\discretionary{\char`\^}{\Wrappedafterbreak}{\char`\^}}%
+            \def\PYGZam{\discretionary{\char`\&}{\Wrappedafterbreak}{\char`\&}}%
+            \def\PYGZlt{\discretionary{}{\Wrappedafterbreak\char`\<}{\char`\<}}%
+            \def\PYGZgt{\discretionary{\char`\>}{\Wrappedafterbreak}{\char`\>}}%
+            \def\PYGZsh{\discretionary{}{\Wrappedafterbreak\char`\#}{\char`\#}}%
+            \def\PYGZpc{\discretionary{}{\Wrappedafterbreak\char`\%}{\char`\%}}%
+            \def\PYGZdl{\discretionary{}{\Wrappedafterbreak\char`\$}{\char`\$}}%
+            \def\PYGZhy{\discretionary{\char`\-}{\Wrappedafterbreak}{\char`\-}}%
+            \def\PYGZsq{\discretionary{}{\Wrappedafterbreak\textquotesingle}{\textquotesingle}}%
+            \def\PYGZdq{\discretionary{}{\Wrappedafterbreak\char`\"}{\char`\"}}%
+            \def\PYGZti{\discretionary{\char`\~}{\Wrappedafterbreak}{\char`\~}}%
+        }
+        % Some characters . , ; ? ! / are not pygmentized.
+        % This macro makes them "active" and they will insert potential linebreaks
+        \newcommand*\Wrappedbreaksatpunct {%
+            \lccode`\~`\.\lowercase{\def~}{\discretionary{\hbox{\char`\.}}{\Wrappedafterbreak}{\hbox{\char`\.}}}%
+            \lccode`\~`\,\lowercase{\def~}{\discretionary{\hbox{\char`\,}}{\Wrappedafterbreak}{\hbox{\char`\,}}}%
+            \lccode`\~`\;\lowercase{\def~}{\discretionary{\hbox{\char`\;}}{\Wrappedafterbreak}{\hbox{\char`\;}}}%
+            \lccode`\~`\:\lowercase{\def~}{\discretionary{\hbox{\char`\:}}{\Wrappedafterbreak}{\hbox{\char`\:}}}%
+            \lccode`\~`\?\lowercase{\def~}{\discretionary{\hbox{\char`\?}}{\Wrappedafterbreak}{\hbox{\char`\?}}}%
+            \lccode`\~`\!\lowercase{\def~}{\discretionary{\hbox{\char`\!}}{\Wrappedafterbreak}{\hbox{\char`\!}}}%
+            \lccode`\~`\/\lowercase{\def~}{\discretionary{\hbox{\char`\/}}{\Wrappedafterbreak}{\hbox{\char`\/}}}%
+            \catcode`\.\active
+            \catcode`\,\active
+            \catcode`\;\active
+            \catcode`\:\active
+            \catcode`\?\active
+            \catcode`\!\active
+            \catcode`\/\active
+            \lccode`\~`\~
+        }
+    \makeatother
+
+    \let\OriginalVerbatim=\Verbatim
+    \makeatletter
+    \renewcommand{\Verbatim}[1][1]{%
+        %\parskip\z@skip
+        \sbox\Wrappedcontinuationbox {\Wrappedcontinuationsymbol}%
+        \sbox\Wrappedvisiblespacebox {\FV@SetupFont\Wrappedvisiblespace}%
+        \def\FancyVerbFormatLine ##1{\hsize\linewidth
+            \vtop{\raggedright\hyphenpenalty\z@\exhyphenpenalty\z@
+                \doublehyphendemerits\z@\finalhyphendemerits\z@
+                \strut ##1\strut}%
+        }%
+        % If the linebreak is at a space, the latter will be displayed as visible
+        % space at end of first line, and a continuation symbol starts next line.
+        % Stretch/shrink are however usually zero for typewriter font.
+        \def\FV@Space {%
+            \nobreak\hskip\z@ plus\fontdimen3\font minus\fontdimen4\font
+            \discretionary{\copy\Wrappedvisiblespacebox}{\Wrappedafterbreak}
+            {\kern\fontdimen2\font}%
+        }%
+
+        % Allow breaks at special characters using \PYG... macros.
+        \Wrappedbreaksatspecials
+        % Breaks at punctuation characters . , ; ? ! and / need catcode=\active
+        \OriginalVerbatim[#1,codes*=\Wrappedbreaksatpunct]%
+    }
+    \makeatother
+
+    % Exact colors from NB
+    \definecolor{incolor}{HTML}{303F9F}
+    \definecolor{outcolor}{HTML}{D84315}
+    \definecolor{cellborder}{HTML}{CFCFCF}
+    \definecolor{cellbackground}{HTML}{F7F7F7}
+
+    % prompt
+    \makeatletter
+    \newcommand{\boxspacing}{\kern\kvtcb@left@rule\kern\kvtcb@boxsep}
+    \makeatother
+    \newcommand{\prompt}[4]{
+        {\ttfamily\llap{{\color{#2}[#3]:\hspace{3pt}#4}}\vspace{-\baselineskip}}
+    }
+    
+
+    
+    % Prevent overflowing lines due to hard-to-break entities
+    \sloppy
+    % Setup hyperref package
+    \hypersetup{
+      breaklinks=true,  % so long urls are correctly broken across lines
+      colorlinks=true,
+      urlcolor=urlcolor,
+      linkcolor=linkcolor,
+      citecolor=citecolor,
+      }
+    % Slightly bigger margins than the latex defaults
+    
+    \geometry{verbose,tmargin=1in,bmargin=1in,lmargin=1in,rmargin=1in}
+    
+    
+
+\begin{document}
+    
+    \maketitle
+    
+    
+
+    
+    \hypertarget{assignment-overview}{%
+\section{Assignment Overview}\label{assignment-overview}}
+
+The following are the problems needed to be solved for this assignment.
+
+\begin{itemize}
+\tightlist
+\item
+  Write a function to find the factorial of N (N being an input) and
+  find the time taken to compute it. This will obviously depend on where
+  you run the code and which approach you use to implement the
+  factorial. Explain your observations briefly.
+\item
+  Write a linear equation solver that will take in matrices \(A\) and
+  \(b\) as inputs, and return the vector \(x\) that solves the equation
+  \(Ax=b\). Your function should catch errors in the inputs and return
+  suitable error messages for different possible problems.
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Time your solver to solve a random \(10\times 10\) system of
+    equations. Compare the time taken against the
+    \texttt{numpy.linalg.solve} function for the same inputs.
+  \end{itemize}
+\item
+  Given a circuit netlist in the form described above, read it in from a
+  file, construct the appropriate matrices, and use the solver you have
+  written above to obtain the voltages and currents in the circuit. If
+  you find AC circuits hard to handle, first do this for pure DC
+  circuits, but you should be able to handle both voltage and current
+  sources.
+\end{itemize}
+
+    \hypertarget{instructions}{%
+\subsection{Instructions}\label{instructions}}
+
+\begin{itemize}
+\tightlist
+\item
+  I have used Python Libraries such as \textbf{math, cmath, numpy}.
+  These libraries should be already installed in the system.
+\item
+  Run the Codes in the order they are. (Do not run any cell randomly
+  from the middle) Because the upcoming code requires functions defined
+  earlier.
+\end{itemize}
+
+    \hypertarget{factorial-of-a-number}{%
+\section{Factorial of a Number}\label{factorial-of-a-number}}
+
+    \hypertarget{recursive-method}{%
+\subsubsection{Recursive Method}\label{recursive-method}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{1}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{def} \PY{n+nf}{factorial\PYZus{}rec}\PY{p}{(}\PY{n}{N}\PY{p}{)}\PY{p}{:}
+    \PY{k}{if}\PY{p}{(}\PY{n}{N}\PY{o}{\PYZlt{}}\PY{l+m+mi}{0}\PY{p}{)}\PY{p}{:}
+        \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Invalid Input}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+    \PY{k}{if}\PY{p}{(}\PY{n}{N}\PY{o}{==}\PY{l+m+mi}{1}\PY{p}{)}\PY{p}{:}
+        \PY{k}{return} \PY{l+m+mi}{1}
+    \PY{k}{else}\PY{p}{:}
+        \PY{k}{return} \PY{n}{N}\PY{o}{*}\PY{n}{factorial\PYZus{}rec}\PY{p}{(}\PY{n}{N}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \hypertarget{iterative-method}{%
+\subsubsection{Iterative Method}\label{iterative-method}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{2}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{def} \PY{n+nf}{factorial\PYZus{}iter}\PY{p}{(}\PY{n}{N}\PY{p}{)}\PY{p}{:}
+    \PY{k}{if}\PY{p}{(}\PY{n}{N}\PY{o}{\PYZlt{}}\PY{l+m+mi}{0}\PY{p}{)}\PY{p}{:}
+        \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Invalid Input}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+    \PY{n}{fac}\PY{o}{=}\PY{l+m+mi}{1}
+    \PY{k}{for} \PY{n}{num} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,}\PY{n}{N}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{)}\PY{p}{:}
+        \PY{n}{fac}\PY{o}{=}\PY{n}{fac}\PY{o}{*}\PY{n}{num}
+    \PY{k}{return} \PY{n}{fac}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \hypertarget{comparision}{%
+\subsubsection{Comparision}\label{comparision}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{3}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{x}\PY{o}{=}\PY{l+m+mi}{10}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{By Recursive Method : }\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{o}{\PYZpc{}}\PY{k}{timeit} factorial\PYZus{}rec(x)
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{By Iterative Method : }\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{o}{\PYZpc{}}\PY{k}{timeit} factorial\PYZus{}iter(x)
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+By Recursive Method :
+1.12 µs ± 49.5 ns per loop (mean ± std. dev. of 7 runs, 1,000,000 loops each)
+By Iterative Method :
+505 ns ± 5.06 ns per loop (mean ± std. dev. of 7 runs, 1,000,000 loops each)
+    \end{Verbatim}
+
+    In general \texttt{Recursions} are slow in implementation, because there
+are too many function calls and the function calls have to be stored in
+a stack so that it could return to the caller.
+
+\texttt{Iterative} Methods are faster in general and the approach is
+intuitive, clean and easy to understand.
+
+Here I observed that Recursive Method takes time in orders of
+\textbf{micro seconds}, while the Iterative one took some \textbf{nano
+seconds}. In Recursion, some extra space is also needed to maintain the
+stack and in some cases there are chances of \emph{Stack Memory
+Overflow}.
+
+\textbf{\emph{Hence Iterative Method is more efficient}}.
+\newpage
+
+    \hypertarget{gauss-elimination}{%
+\section{Gauss Elimination}\label{gauss-elimination}}
+
+    The task is to solve a Matrix Equation \textbf{Ax=B} where - A is a (M X
+N) Matrix - x is a (N X 1) Matrix - B is a (M X 1) Matrix
+
+    In Gauss Elimination Method there are basically Two Steps : -
+\textbf{Forward Elimination} : We apply some operations and make the
+Matrix A in Echelon Form (Upper Triangular Matrix with diagonal elements
+normalized to 1). - \textbf{Backward Substitution} : We substitute the
+values back one by one starting from the lowest row to the upper row.
+
+    \hypertarget{forward-elimination}{%
+\subsection{Forward Elimination}\label{forward-elimination}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{4}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{def} \PY{n+nf}{Forward\PYZus{}Elimination}\PY{p}{(}\PY{n}{A}\PY{p}{,}\PY{n}{B}\PY{p}{)}\PY{p}{:}
+    \PY{n}{N}\PY{o}{=}\PY{n+nb}{len}\PY{p}{(}\PY{n}{A}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{)}     \PY{c+c1}{\PYZsh{} Number of Variables}
+    \PY{n}{M}\PY{o}{=}\PY{n+nb}{len}\PY{p}{(}\PY{n}{A}\PY{p}{)}        \PY{c+c1}{\PYZsh{} Number of Equations}
+    \PY{n}{flag}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Unique Solution}\PY{l+s+s2}{\PYZdq{}}
+    \PY{k}{for} \PY{n}{row} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,}\PY{n}{N}\PY{p}{)}\PY{p}{:}
+        \PY{c+c1}{\PYZsh{}Check if Normalization Possible}
+        \PY{k}{if}\PY{p}{(}\PY{n+nb}{abs}\PY{p}{(}\PY{n}{A}\PY{p}{[}\PY{n}{row}\PY{p}{]}\PY{p}{[}\PY{n}{row}\PY{p}{]}\PY{p}{)}\PY{o}{\PYZlt{}}\PY{o}{=}\PY{l+m+mf}{2e\PYZhy{}19}\PY{p}{)}\PY{p}{:}
+            \PY{c+c1}{\PYZsh{}Find where its non\PYZhy{}0}
+            \PY{n}{swapped}\PY{o}{=}\PY{k+kc}{False}
+            \PY{k}{for} \PY{n}{dummy\PYZus{}row} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n}{row}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{,}\PY{n}{M}\PY{p}{)}\PY{p}{:}
+                \PY{k}{if}\PY{p}{(}\PY{n+nb}{abs}\PY{p}{(}\PY{n}{A}\PY{p}{[}\PY{n}{dummy\PYZus{}row}\PY{p}{]}\PY{p}{[}\PY{n}{row}\PY{p}{]}\PY{p}{)}\PY{o}{\PYZgt{}}\PY{l+m+mf}{2e\PYZhy{}19}\PY{p}{)}\PY{p}{:}
+                    \PY{c+c1}{\PYZsh{}Swap}
+                    \PY{n}{A}\PY{p}{[}\PY{n}{dummy\PYZus{}row}\PY{p}{]}\PY{p}{,}\PY{n}{A}\PY{p}{[}\PY{n}{row}\PY{p}{]}\PY{o}{=}\PY{n}{A}\PY{p}{[}\PY{n}{row}\PY{p}{]}\PY{p}{,}\PY{n}{A}\PY{p}{[}\PY{n}{dummy\PYZus{}row}\PY{p}{]}
+                    \PY{n}{B}\PY{p}{[}\PY{n}{dummy\PYZus{}row}\PY{p}{]}\PY{p}{,}\PY{n}{B}\PY{p}{[}\PY{n}{row}\PY{p}{]}\PY{o}{=}\PY{n}{B}\PY{p}{[}\PY{n}{row}\PY{p}{]}\PY{p}{,}\PY{n}{B}\PY{p}{[}\PY{n}{dummy\PYZus{}row}\PY{p}{]}
+                    \PY{n}{swapped}\PY{o}{=}\PY{k+kc}{True}
+                    \PY{k}{break}
+            \PY{k}{if}\PY{p}{(}\PY{n}{swapped}\PY{o}{==}\PY{k+kc}{False}\PY{p}{)}\PY{p}{:}
+                \PY{c+c1}{\PYZsh{}No Unique Solution}
+                \PY{n}{flag}\PY{o}{=}\PY{n}{No\PYZus{}Unique\PYZus{}Solution}\PY{p}{(}\PY{n}{A}\PY{p}{,}\PY{n}{B}\PY{p}{)}
+                \PY{k}{return} \PY{n}{A}\PY{p}{,}\PY{n}{B}\PY{p}{,}\PY{n}{flag}
+        \PY{n}{divisor}\PY{o}{=}\PY{n}{A}\PY{p}{[}\PY{n}{row}\PY{p}{]}\PY{p}{[}\PY{n}{row}\PY{p}{]}
+        \PY{c+c1}{\PYZsh{}Normalization}
+        \PY{k}{for} \PY{n}{col} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n}{row}\PY{p}{,}\PY{n}{N}\PY{p}{)}\PY{p}{:}
+            \PY{n}{A}\PY{p}{[}\PY{n}{row}\PY{p}{]}\PY{p}{[}\PY{n}{col}\PY{p}{]}\PY{o}{/}\PY{o}{=}\PY{n}{divisor}
+        \PY{n}{B}\PY{p}{[}\PY{n}{row}\PY{p}{]}\PY{o}{/}\PY{o}{=}\PY{n}{divisor}
+        \PY{c+c1}{\PYZsh{}Elimination}
+        \PY{k}{for} \PY{n}{next\PYZus{}rows} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n}{row}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{,}\PY{n}{M}\PY{p}{)}\PY{p}{:}
+            \PY{n}{multiplier}\PY{o}{=}\PY{n}{A}\PY{p}{[}\PY{n}{next\PYZus{}rows}\PY{p}{]}\PY{p}{[}\PY{n}{row}\PY{p}{]}
+            \PY{k}{for} \PY{n}{col} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n}{row}\PY{p}{,}\PY{n}{N}\PY{p}{)}\PY{p}{:}
+                \PY{n}{A}\PY{p}{[}\PY{n}{next\PYZus{}rows}\PY{p}{]}\PY{p}{[}\PY{n}{col}\PY{p}{]}\PY{o}{\PYZhy{}}\PY{o}{=}\PY{n}{multiplier}\PY{o}{*}\PY{n}{A}\PY{p}{[}\PY{n}{row}\PY{p}{]}\PY{p}{[}\PY{n}{col}\PY{p}{]}
+            \PY{n}{B}\PY{p}{[}\PY{n}{next\PYZus{}rows}\PY{p}{]}\PY{o}{\PYZhy{}}\PY{o}{=}\PY{n}{multiplier}\PY{o}{*}\PY{n}{B}\PY{p}{[}\PY{n}{row}\PY{p}{]}
+    \PY{n}{flag}\PY{o}{=}\PY{n}{No\PYZus{}Unique\PYZus{}Solution}\PY{p}{(}\PY{n}{A}\PY{p}{,}\PY{n}{B}\PY{p}{)}
+    \PY{k}{return} \PY{n}{A}\PY{p}{,}\PY{n}{B}\PY{p}{,}\PY{n}{flag}
+\end{Verbatim}
+\end{tcolorbox}
+\newpage
+
+    This function \texttt{Forward\_Elimination()} takes in arguments A and B
+which are matrices of the form \textbf{(M X N)} and \textbf{(M X 1)}.
+Firstly, it iterates through each row and \emph{normalizes} it. Then it
+does some \emph{row-operations} on the rows after it to reduce those
+coefficients to 0.
+
+In the \emph{Normalization Step}, if it find that the normalizing factor
+i.e the A{[}row{]}{[}row{]} (\emph{divisor} variable) is zero, then it
+searches other rows below it for non-zero coefficient of
+A{[}other\_row{]}{[}row{]}. If its a hit then it \textbf{swaps} that row
+with the intial row. Note that we have to make changes in both matrices
+A and B.
+
+If while searching it finds no non-zero coefficient of
+A{[}other\_row{]}{[}row{]} then it means the given Equations do
+\textbf{NOT} have Unique Solution. The \emph{flag} variable which
+initially stored ``Uniqe Solution'' is changed to either ``No Solution''
+or ``Infinite Solutions'' depending on the equations. This is done using
+the function \texttt{No\_Unique\_Solution()} which has been descibed
+afterwards.
+
+Note: While comparing the float values we \textbf{never check equality}
+with 0. Rather we check if the value is sufficiently close enough to 0.
+This is done because of the \emph{Floating Point Approximation} that the
+Python's Compiler does in the backend. I choose the
+\texttt{Tolerance\ Level} as \emph{2e-19}, reason begin that we have to
+later deal with values as small as \emph{1e-12} in case of AC circuits.
+So the \emph{tolerance level} must be choosen as a number smaller than
+it. In my opinion values of the order \emph{1e-15} should also work
+fine.
+
+    \hypertarget{backward-substitution}{%
+\subsection{Backward Substitution}\label{backward-substitution}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{5}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{def} \PY{n+nf}{Backward\PYZus{}Substitution}\PY{p}{(}\PY{n}{A}\PY{p}{,} \PY{n}{B}\PY{p}{)}\PY{p}{:}
+    \PY{n}{N}\PY{o}{=}\PY{n+nb}{len}\PY{p}{(}\PY{n}{A}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{)}     \PY{c+c1}{\PYZsh{} Number of Variables}
+    \PY{n}{M}\PY{o}{=}\PY{n+nb}{len}\PY{p}{(}\PY{n}{A}\PY{p}{)}        \PY{c+c1}{\PYZsh{} Number of Equations}
+    \PY{c+c1}{\PYZsh{}Create the list x containing the values of the variables}
+    \PY{n}{x}\PY{o}{=}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{none}\PY{l+s+s1}{\PYZsq{}} \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n}{N}\PY{p}{)}\PY{p}{]}
+    \PY{k}{for} \PY{n}{row} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n}{N}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{,}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{,}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{)}\PY{p}{:}
+        \PY{n}{Sum}\PY{o}{=}\PY{n}{B}\PY{p}{[}\PY{n}{row}\PY{p}{]}
+        \PY{k}{for} \PY{n}{cols} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n}{N}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{,}\PY{n}{row}\PY{p}{,}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{)}\PY{p}{:}
+            \PY{n}{Sum}\PY{o}{\PYZhy{}}\PY{o}{=}\PY{n}{x}\PY{p}{[}\PY{n}{cols}\PY{p}{]}\PY{o}{*}\PY{n}{A}\PY{p}{[}\PY{n}{row}\PY{p}{]}\PY{p}{[}\PY{n}{cols}\PY{p}{]}
+        \PY{n}{x}\PY{p}{[}\PY{n}{row}\PY{p}{]}\PY{o}{=}\PY{n}{Sum}
+    \PY{k}{return} \PY{n}{x}
+\end{Verbatim}
+\end{tcolorbox}
+
+    The function \texttt{Backward\_Substitution()} takes arguments as A and
+B where A is the RREF (\emph{Row Reduced Echelon Form}). This funtion is
+beging called only after ensuring that the given set of Linear Equations
+have a \texttt{Unique\ Solution}. It starts from the Nth row and find
+the values of the corresponding variables, till the first row. The
+answers are stored in a list \emph{x} which is returned in the end.
+\newpage
+
+    \hypertarget{handle-cases-having-no-solution}{%
+\subsection{Handle cases having NO
+Solution}\label{handle-cases-having-no-solution}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{6}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{def} \PY{n+nf}{No\PYZus{}Unique\PYZus{}Solution}\PY{p}{(}\PY{n}{A}\PY{p}{,}\PY{n}{B}\PY{p}{)}\PY{p}{:}
+    \PY{n}{N}\PY{o}{=}\PY{n+nb}{len}\PY{p}{(}\PY{n}{A}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{)}     \PY{c+c1}{\PYZsh{} Number of Variables}
+    \PY{n}{M}\PY{o}{=}\PY{n+nb}{len}\PY{p}{(}\PY{n}{A}\PY{p}{)}        \PY{c+c1}{\PYZsh{} Number of Equations}
+    \PY{n}{counter}\PY{o}{=}\PY{l+m+mi}{0}
+    \PY{k}{for} \PY{n}{row} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n}{M}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{,}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{,}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{)}\PY{p}{:}
+        \PY{n}{check}\PY{o}{=}\PY{k+kc}{False}
+        \PY{k}{for} \PY{n}{col} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n}{N}\PY{p}{)}\PY{p}{:}
+            \PY{k}{if}\PY{p}{(}\PY{n+nb}{abs}\PY{p}{(}\PY{n}{A}\PY{p}{[}\PY{n}{row}\PY{p}{]}\PY{p}{[}\PY{n}{col}\PY{p}{]}\PY{p}{)}\PY{o}{\PYZgt{}}\PY{l+m+mf}{2e\PYZhy{}19}\PY{p}{)}\PY{p}{:}
+                \PY{n}{check}\PY{o}{=}\PY{k+kc}{True}
+        \PY{k}{if}\PY{p}{(}\PY{n}{check}\PY{o}{==}\PY{k+kc}{False}\PY{p}{)}\PY{p}{:}
+            \PY{n}{counter}\PY{o}{+}\PY{o}{=}\PY{l+m+mi}{1}
+            \PY{k}{if}\PY{p}{(}\PY{n+nb}{abs}\PY{p}{(}\PY{n}{B}\PY{p}{[}\PY{n}{row}\PY{p}{]}\PY{p}{)}\PY{o}{\PYZgt{}}\PY{l+m+mf}{2e\PYZhy{}19}\PY{p}{)}\PY{p}{:}
+                \PY{k}{return} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{No Solution}\PY{l+s+s2}{\PYZdq{}}
+    \PY{k}{if}\PY{p}{(}\PY{n}{counter}\PY{o}{\PYZlt{}}\PY{n}{M}\PY{o}{\PYZhy{}}\PY{n}{N}\PY{p}{)}\PY{p}{:}
+        \PY{k}{return} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{No Solution}\PY{l+s+s2}{\PYZdq{}}
+    \PY{k}{elif}\PY{p}{(}\PY{n}{counter}\PY{o}{\PYZgt{}}\PY{n}{M}\PY{o}{\PYZhy{}}\PY{n}{N}\PY{p}{)}\PY{p}{:}
+        \PY{k}{return} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Infinite Solution}\PY{l+s+s2}{\PYZdq{}}
+    \PY{k}{else}\PY{p}{:}
+        \PY{k}{return} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Unique Solution}\PY{l+s+s2}{\PYZdq{}}
+    
+\end{Verbatim}
+\end{tcolorbox}
+
+    The function \texttt{No\_Unique\_Solution()} is called in the end of
+Forward Elimination or when during Forward Elimination it doesn't find
+any row having non-zero value of the Normalizing Factor.
+\texttt{Tolerance\ Level} is taken as 2e-19. It returns the flags
+\emph{``Unique Solution''}, \emph{``No Solution''}, \emph{``Infinite
+Solution''} depeding on the cases.
+
+    \hypertarget{implementation-of-gauss-elimination}{%
+\subsection{Implementation of Gauss
+Elimination}\label{implementation-of-gauss-elimination}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{7}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{import} \PY{n+nn}{numpy} \PY{k}{as} \PY{n+nn}{np}
+\PY{k}{def} \PY{n+nf}{Gauss\PYZus{}Elimination}\PY{p}{(}\PY{n}{A}\PY{p}{,}\PY{n}{B}\PY{p}{)}\PY{p}{:}
+    \PY{k}{if}\PY{p}{(}\PY{o+ow}{not} \PY{n+nb}{isinstance}\PY{p}{(}\PY{n}{A}\PY{p}{,}\PY{n+nb}{list}\PY{p}{)}\PY{p}{)}\PY{p}{:}
+        \PY{n}{A}\PY{o}{=}\PY{n}{A}\PY{o}{.}\PY{n}{astype}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{float32}\PY{p}{)}
+        \PY{n}{B}\PY{o}{=}\PY{n}{B}\PY{o}{.}\PY{n}{astype}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{float32}\PY{p}{)}
+    \PY{n}{A1}\PY{p}{,}\PY{n}{B1}\PY{p}{,}\PY{n}{flag}\PY{o}{=}\PY{n}{Forward\PYZus{}Elimination}\PY{p}{(}\PY{n}{A}\PY{p}{,}\PY{n}{B}\PY{p}{)}
+    \PY{k}{if}\PY{p}{(}\PY{n}{flag}\PY{o}{==}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Unique Solution}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}\PY{p}{:}
+        \PY{n}{x}\PY{o}{=}\PY{n}{Backward\PYZus{}Substitution}\PY{p}{(}\PY{n}{A1}\PY{p}{,}\PY{n}{B1}\PY{p}{)}
+        \PY{k}{return} \PY{n}{x}
+    \PY{k}{else}\PY{p}{:}
+        \PY{k}{return} \PY{n}{flag}
+\end{Verbatim}
+\end{tcolorbox}
+
+    The function \texttt{Gauss\_Elimination} firstly calls
+\texttt{Forward\_Elimination()} and then
+\texttt{Backward\_Substitution()} . Note that if the input has numpy
+arrays, I have converted the datatype to numpy float. It is done to
+ensure float division during Normalization Step. If the datatype is int
+for the numpy arrays it will work with only integer values, because the
+backend of \emph{Numpy} is in \textbf{C language}. We need not worry for
+lists because Python does implicit type-casting if needed.
+
+    \hypertarget{limitations}{%
+\subsection{Limitations}\label{limitations}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{8}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}Case when code fails}
+\PY{n}{A}\PY{o}{=}\PY{p}{[}
+    \PY{p}{[}\PY{l+m+mi}{7}\PY{p}{,}\PY{l+m+mi}{9}\PY{p}{,}\PY{l+m+mi}{10}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mi}{4}\PY{p}{,}\PY{l+m+mi}{5}\PY{p}{,}\PY{l+m+mi}{6}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mi}{11}\PY{p}{,}\PY{l+m+mi}{14}\PY{p}{,}\PY{l+m+mi}{16}\PY{p}{]}
+\PY{p}{]}
+\PY{n}{B}\PY{o}{=}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{9}\PY{p}{,}\PY{l+m+mi}{10}\PY{p}{]}
+\PY{c+c1}{\PYZsh{} A is singular Matrix}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{linalg}\PY{o}{.}\PY{n}{solve}\PY{p}{(}\PY{n}{A}\PY{p}{,}\PY{n}{B}\PY{p}{)}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{Gauss\PYZus{}Elimination}\PY{p}{(}\PY{n}{A}\PY{p}{,}\PY{n}{B}\PY{p}{)}\PY{p}{)}
+
+\PY{n}{A}\PY{o}{=}\PY{p}{[}
+    \PY{p}{[}\PY{l+m+mi}{8}\PY{p}{,}\PY{l+m+mi}{9}\PY{p}{,}\PY{l+m+mi}{10}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mi}{4}\PY{p}{,}\PY{l+m+mi}{5}\PY{p}{,}\PY{l+m+mi}{6}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mi}{12}\PY{p}{,}\PY{l+m+mi}{14}\PY{p}{,}\PY{l+m+mi}{16}\PY{p}{]}
+\PY{p}{]}
+\PY{n}{B}\PY{o}{=}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{9}\PY{p}{,}\PY{l+m+mi}{10}\PY{p}{]}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+[-4.20000000e+01 -4.88498131e-14  2.95000000e+01]
+[-1.3333333333333712, -20.3333333333333, 19.333333333333332]
+    \end{Verbatim}
+
+    \begin{itemize}
+\tightlist
+\item
+  For some equations having Infinite Solutions, my code returns a Unique
+  solution. Although the numpy.linalg.solve() also works here,
+  \textbf{but it shouldn't.} The case mentioned above has determinant 0,
+  so it should give Error. This is also a limitation for the
+  np.linalg.solve().
+\item
+  Both codes give a correct solution from the set of infinite solutions,
+  i.e.~it is not a unique solution.
+\item
+  My impelentation is slower than \emph{np.linalg.solve()} because the
+  backend in numpy is C.C is much faster than Python. Also NumPy is fast
+  because it can do all its calculations without calling back into
+  Python. NumPy package integrates C, C++, and Fortran codes in Python
+\end{itemize}
+
+    \hypertarget{advantage-over-np.linalg.solve}{%
+\subsection{Advantage over
+np.linalg.solve()}\label{advantage-over-np.linalg.solve}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{9}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{A}\PY{o}{=}\PY{p}{[}
+    \PY{p}{[}\PY{l+m+mi}{8}\PY{p}{,}\PY{l+m+mi}{9}\PY{p}{,}\PY{l+m+mi}{10}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mi}{4}\PY{p}{,}\PY{l+m+mi}{5}\PY{p}{,}\PY{l+m+mi}{6}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mi}{12}\PY{p}{,}\PY{l+m+mi}{14}\PY{p}{,}\PY{l+m+mi}{16}\PY{p}{]}
+\PY{p}{]}
+\PY{n}{B}\PY{o}{=}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{9}\PY{p}{,}\PY{l+m+mi}{10}\PY{p}{]}
+
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{linalg}\PY{o}{.}\PY{n}{solve}\PY{p}{(}\PY{n}{A}\PY{p}{,}\PY{n}{B}\PY{p}{)}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{Gauss\PYZus{}Elimination}\PY{p}{(}\PY{n}{A}\PY{p}{,}\PY{n}{B}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+[-10.75   0.5    8.25]
+Infinite Solution
+    \end{Verbatim}
+
+    My code gives correct answer that this has infinite solution, but
+np.linalg.solve() just gives a solution that is correct. This solution
+is \textbf{not unique}.
+
+    \hypertarget{x-10-matrix-solving}{%
+\subsection{10 X 10 Matrix Solving}\label{x-10-matrix-solving}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{10}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{A}\PY{o}{=}\PY{n}{np}\PY{o}{.}\PY{n}{random}\PY{o}{.}\PY{n}{randint}\PY{p}{(}\PY{n}{low}\PY{o}{=}\PY{o}{\PYZhy{}}\PY{l+m+mi}{100000}\PY{p}{,}\PY{n}{high}\PY{o}{=}\PY{l+m+mi}{100000}\PY{p}{,}\PY{n}{size}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{10}\PY{p}{,}\PY{l+m+mi}{10}\PY{p}{)}\PY{p}{)}
+\PY{n}{B}\PY{o}{=}\PY{n}{np}\PY{o}{.}\PY{n}{random}\PY{o}{.}\PY{n}{randint}\PY{p}{(}\PY{n}{low}\PY{o}{=}\PY{o}{\PYZhy{}}\PY{l+m+mi}{100000}\PY{p}{,}\PY{n}{high}\PY{o}{=}\PY{l+m+mi}{100000}\PY{p}{,}\PY{n}{size}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{10}\PY{p}{)}\PY{p}{)}
+
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{From linalg.solve() :}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{linalg}\PY{o}{.}\PY{n}{solve}\PY{p}{(}\PY{n}{A}\PY{p}{,}\PY{n}{B}\PY{p}{)}\PY{p}{)}
+\PY{o}{\PYZpc{}}\PY{k}{timeit} np.linalg.solve(A,B)
+
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{From my Method :}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{Gauss\PYZus{}Elimination}\PY{p}{(}\PY{n}{A}\PY{p}{,}\PY{n}{B}\PY{p}{)}\PY{p}{)}
+\PY{o}{\PYZpc{}}\PY{k}{timeit} Gauss\PYZus{}Elimination(A,B)
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+From linalg.solve() :
+[ 0.03061941  2.26369235  0.51224422 -0.77444314  3.39525104  1.30925905
+  1.80300032 -0.96814396 -1.89594135 -3.71992834]
+8.22 µs ± 997 ns per loop (mean ± std. dev. of 7 runs, 100,000 loops each)
+From my Method :
+[0.030611038, 2.2636974, 0.51224756, -0.7744447, 3.3952637, 1.3092566,
+1.8030082, -0.9681463, -1.8959444, -3.7199311]
+489 µs ± 32.2 µs per loop (mean ± std. dev. of 7 runs, 1,000 loops each)
+    \end{Verbatim}
+
+    It generates a random 10 X 10 Matrix and solves using Both Methods. Both
+give the same answers, but the np.linalg.solve() is about 70 times
+faster than my implementation.
+\newpage
+
+    \hypertarget{spice}{%
+\section{Spice}\label{spice}}
+
+\begin{quote}
+From the given netlist, solve the circuit and give the corresponding
+outputs.
+\end{quote}
+
+    \textbf{Note} :
+    \begin{itemize}
+        \item While implementation we need not care about wheter the
+MNA has solution or not, because those set of equations correspond to a
+Circuit. Any Circuit would have only one Unique Solution.
+        \item The input
+frequency is assumed to be in Hz.
+\item The input values arre assumed to be
+in SI Units : Volts,Ampere,Ohm,Henry,Farad.
+\item The Phasor Angle is
+printed in Degrees.
+\item The Phasor begin read from the file is assumed to
+be in Degrees.
+\item Python Libraries like math and cmath are used here.
+\item This Circuit Solver solves \textbf{only} for 
+\begin{itemize}
+    \item Single Frequency Circuits
+    \item Resistors with DC (Inductor and Capacitor would required Transient
+Analysis)
+\item Resistors, Inductors, Capacitors with AC (Returns the value
+of Voltages and Currents in Steady State.)
+\end{itemize} 
+    \end{itemize}
+%     - While implementation we need not care about wheter the
+% MNA has solution or not, because those set of equations correspond to a
+% Circuit. Any Circuit would have only one Unique Solution. - The input
+% frequency is assumed to be in Hz. - The input values arre assumed to be
+% in SI Units : Volts,Ampere,Ohm,Henry,Farad. - The Phasor Angle is
+% printed in Degrees. - The Phasor begin read from the file is assumed to
+% be in Degrees. - Python Libraries like math and cmath are used here. -
+% This Circuit Solver solves \textbf{only} for - Single Frequency Circuits
+% - Resistors with DC (Inductor and Capacitor would required Transient
+% Analysis) - Resistors, Inductors, Capacitors with AC (Returns the value
+% of Voltages and Currents in Steady State.)
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{11}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{def} \PY{n+nf}{circuit\PYZus{}solver}\PY{p}{(}\PY{n}{filename}\PY{p}{)}\PY{p}{:}
+    \PY{k}{with} \PY{n+nb}{open}\PY{p}{(}\PY{n}{filename}\PY{p}{)} \PY{k}{as} \PY{n}{f}\PY{p}{:}
+        \PY{n}{lines}\PY{o}{=}\PY{n}{f}\PY{o}{.}\PY{n}{readlines}\PY{p}{(}\PY{p}{)}
+        \PY{n}{ckt\PYZus{}data}\PY{o}{=}\PY{p}{[}\PY{p}{]}
+        \PY{k}{for} \PY{n}{line} \PY{o+ow}{in} \PY{n}{lines}\PY{p}{:}
+            \PY{n}{ckt\PYZus{}data}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n}{line}\PY{o}{.}\PY{n}{split}\PY{p}{(}\PY{p}{)}\PY{p}{)}
+    \PY{n}{check}\PY{o}{=}\PY{k+kc}{False}
+    \PY{n}{variables}\PY{o}{=}\PY{p}{[}\PY{p}{]}
+    \PY{n}{dc\PYZus{}flag}\PY{o}{=}\PY{k+kc}{False}
+    \PY{n}{ac\PYZus{}flag}\PY{o}{=}\PY{k+kc}{False}
+    \PY{c+c1}{\PYZsh{}Read the required part in the .netlist file.}
+    \PY{c+c1}{\PYZsh{}i.e. the part between .circuit and .end }
+    \PY{k}{for} \PY{n}{line} \PY{o+ow}{in} \PY{n}{ckt\PYZus{}data}\PY{p}{:}
+        \PY{k}{if}\PY{p}{(}\PY{n+nb}{len}\PY{p}{(}\PY{n}{line}\PY{p}{)}\PY{o}{==}\PY{l+m+mi}{0}\PY{p}{)}\PY{p}{:}
+            \PY{k}{continue}
+        \PY{k}{if}\PY{p}{(}\PY{n}{line}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{o}{==}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{.end}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{:}
+            \PY{n}{check}\PY{o}{=}\PY{k+kc}{False}
+            \PY{k}{break}
+        \PY{k}{if}\PY{p}{(}\PY{n}{check}\PY{o}{==}\PY{k+kc}{True}\PY{p}{)}\PY{p}{:}
+            \PY{c+c1}{\PYZsh{}Name node i as ni for simplicity.}
+            \PY{k}{if}\PY{p}{(}\PY{n}{line}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{o}{!=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{n}\PY{l+s+s1}{\PYZsq{}} \PY{o+ow}{and} \PY{n}{line}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{o}{!=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{GND}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{:}
+               \PY{n}{line}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{n}\PY{l+s+s1}{\PYZsq{}}\PY{o}{+}\PY{n}{line}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}
+            \PY{k}{if}\PY{p}{(}\PY{n}{line}\PY{p}{[}\PY{l+m+mi}{2}\PY{p}{]}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{o}{!=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{n}\PY{l+s+s1}{\PYZsq{}} \PY{o+ow}{and} \PY{n}{line}\PY{p}{[}\PY{l+m+mi}{2}\PY{p}{]}\PY{o}{!=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{GND}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{:}
+                \PY{n}{line}\PY{p}{[}\PY{l+m+mi}{2}\PY{p}{]}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{n}\PY{l+s+s1}{\PYZsq{}}\PY{o}{+}\PY{n}{line}\PY{p}{[}\PY{l+m+mi}{2}\PY{p}{]}
+            \PY{c+c1}{\PYZsh{}Add the circuit variables to the variables list.}
+            \PY{n}{variables}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n}{line}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{)}        
+            \PY{n}{variables}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n}{line}\PY{p}{[}\PY{l+m+mi}{2}\PY{p}{]}\PY{p}{)}    
+            \PY{c+c1}{\PYZsh{}Check for Voltage Sources}
+            \PY{k}{if}\PY{p}{(}\PY{n}{line}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]} \PY{o+ow}{in} \PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{V}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{v}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}\PY{p}{:}
+                \PY{n}{variables}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{I}\PY{l+s+s2}{\PYZdq{}}\PY{o}{+}\PY{n}{line}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{)}  
+                \PY{k}{if}\PY{p}{(}\PY{n}{line}\PY{p}{[}\PY{l+m+mi}{3}\PY{p}{]}\PY{o}{==}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{dc}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}\PY{p}{:}
+                    \PY{n}{dc\PYZus{}flag}\PY{o}{=}\PY{k+kc}{True}
+                \PY{k}{if}\PY{p}{(}\PY{n}{line}\PY{p}{[}\PY{l+m+mi}{3}\PY{p}{]}\PY{o}{==}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{ac}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}\PY{p}{:}
+                    \PY{n}{ac\PYZus{}flag}\PY{o}{=}\PY{k+kc}{True}
+            \PY{c+c1}{\PYZsh{}Check for Current Sources}
+            \PY{k}{elif}\PY{p}{(}\PY{n}{line}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]} \PY{o+ow}{in} \PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{I}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{i}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}\PY{p}{:}
+                \PY{k}{if}\PY{p}{(}\PY{n}{line}\PY{p}{[}\PY{l+m+mi}{3}\PY{p}{]}\PY{o}{==}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{dc}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}\PY{p}{:}
+                    \PY{n}{dc\PYZus{}flag}\PY{o}{=}\PY{k+kc}{True}
+                \PY{k}{if}\PY{p}{(}\PY{n}{line}\PY{p}{[}\PY{l+m+mi}{3}\PY{p}{]}\PY{o}{==}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{ac}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}\PY{p}{:}
+                    \PY{n}{ac\PYZus{}flag}\PY{o}{=}\PY{k+kc}{True}
+        \PY{k}{if}\PY{p}{(}\PY{n}{line}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{o}{==}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{.circuit}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{:}
+            \PY{n}{check}\PY{o}{=}\PY{k+kc}{True}
+    \PY{c+c1}{\PYZsh{}To deal with the circuit variables, we need }
+    \PY{n}{variables}\PY{o}{=}\PY{n+nb}{list}\PY{p}{(}\PY{n+nb}{set}\PY{p}{(}\PY{n}{variables}\PY{p}{)}\PY{p}{)}
+    \PY{n}{variables}\PY{o}{.}\PY{n}{sort}\PY{p}{(}\PY{p}{)}
+    \PY{n}{pos}\PY{o}{=}\PY{p}{\PYZob{}}\PY{p}{\PYZcb{}}
+    \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n+nb}{len}\PY{p}{(}\PY{n}{variables}\PY{p}{)}\PY{p}{)}\PY{p}{:}
+        \PY{n}{pos}\PY{p}{[}\PY{n}{variables}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{p}{]}\PY{o}{=}\PY{n}{i}
+    \PY{k}{if}\PY{p}{(}\PY{n}{ac\PYZus{}flag}\PY{o}{==}\PY{k+kc}{True} \PY{o+ow}{and} \PY{n}{dc\PYZus{}flag}\PY{o}{==}\PY{k+kc}{True}\PY{p}{)}\PY{p}{:}
+        \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Multiple Frequencies : Involves both AC and DC Sources}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+        \PY{k}{return}
+    \PY{k}{elif}\PY{p}{(}\PY{n}{dc\PYZus{}flag}\PY{o}{==}\PY{k+kc}{True}\PY{p}{)}\PY{p}{:}
+        \PY{n}{dc\PYZus{}solver}\PY{p}{(}\PY{n}{pos}\PY{p}{,}\PY{n}{ckt\PYZus{}data}\PY{p}{,}\PY{n}{variables}\PY{p}{)}
+    \PY{k}{else}\PY{p}{:}
+        \PY{n}{ac\PYZus{}solver}\PY{p}{(}\PY{n}{pos}\PY{p}{,}\PY{n}{ckt\PYZus{}data}\PY{p}{,}\PY{n}{variables}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    The function \texttt{circuit\_solver()} takes in the input by reading
+the .netlist file. It then calls the function dc\_solver() or
+ac\_solver() depending on the circuit. If we have both AC and DC
+sources, it means we have Multiple Frequencies which can not be delt
+here.
+
+The input is taken in the list \emph{ckt\_data} and the corresponding
+variables are added in the dictionary \emph{pos}. \emph{Pos} contains
+the position of the circuit variables for referrencing in the MNA
+Matrix.
+\newpage
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{12}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{def} \PY{n+nf}{dc\PYZus{}solver}\PY{p}{(}\PY{n}{pos}\PY{p}{,}\PY{n}{ckt\PYZus{}data}\PY{p}{,}\PY{n}{variables}\PY{p}{)}\PY{p}{:}
+    \PY{n}{l}\PY{o}{=}\PY{n+nb}{len}\PY{p}{(}\PY{n}{variables}\PY{p}{)}
+    \PY{c+c1}{\PYZsh{}Generate the A and B matrix for Modified Nodal Analysis.}
+    \PY{n}{A}\PY{o}{=}\PY{p}{[}\PY{p}{[}\PY{l+m+mi}{0} \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n}{l}\PY{p}{)}\PY{p}{]} \PY{k}{for} \PY{n}{j} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n}{l}\PY{p}{)}\PY{p}{]}
+    \PY{n}{b}\PY{o}{=}\PY{p}{[}\PY{l+m+mi}{0} \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n}{l}\PY{p}{)}\PY{p}{]}
+    \PY{n}{check}\PY{o}{=}\PY{k+kc}{False}
+    \PY{c+c1}{\PYZsh{}Read the part between .circuit and .end}
+    \PY{k}{for} \PY{n}{line} \PY{o+ow}{in} \PY{n}{ckt\PYZus{}data}\PY{p}{:}
+        \PY{k}{if}\PY{p}{(}\PY{n}{line}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{o}{==}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{.end}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{:}
+            \PY{n}{check}\PY{o}{=}\PY{k+kc}{False}
+            \PY{k}{break}
+        \PY{k}{if}\PY{p}{(}\PY{n}{check}\PY{o}{==}\PY{k+kc}{True}\PY{p}{)}\PY{p}{:}
+            \PY{c+c1}{\PYZsh{}Find Resistances}
+            \PY{k}{if}\PY{p}{(}\PY{n}{line}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]} \PY{o+ow}{in} \PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{R}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{r}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}\PY{p}{:}
+                \PY{n}{impedance}\PY{o}{=}\PY{n+nb}{float}\PY{p}{(}\PY{n}{line}\PY{p}{[}\PY{l+m+mi}{3}\PY{p}{]}\PY{p}{)}
+                \PY{n}{A}\PY{p}{[}\PY{n}{pos}\PY{p}{[}\PY{n}{line}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{]}\PY{p}{]}\PY{p}{[}\PY{n}{pos}\PY{p}{[}\PY{n}{line}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{]}\PY{p}{]}\PY{o}{+}\PY{o}{=}\PY{l+m+mi}{1}\PY{o}{/}\PY{n}{impedance}
+                \PY{n}{A}\PY{p}{[}\PY{n}{pos}\PY{p}{[}\PY{n}{line}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{]}\PY{p}{]}\PY{p}{[}\PY{n}{pos}\PY{p}{[}\PY{n}{line}\PY{p}{[}\PY{l+m+mi}{2}\PY{p}{]}\PY{p}{]}\PY{p}{]}\PY{o}{\PYZhy{}}\PY{o}{=}\PY{l+m+mi}{1}\PY{o}{/}\PY{n}{impedance}
+                \PY{n}{A}\PY{p}{[}\PY{n}{pos}\PY{p}{[}\PY{n}{line}\PY{p}{[}\PY{l+m+mi}{2}\PY{p}{]}\PY{p}{]}\PY{p}{]}\PY{p}{[}\PY{n}{pos}\PY{p}{[}\PY{n}{line}\PY{p}{[}\PY{l+m+mi}{2}\PY{p}{]}\PY{p}{]}\PY{p}{]}\PY{o}{+}\PY{o}{=}\PY{l+m+mi}{1}\PY{o}{/}\PY{n}{impedance}
+                \PY{n}{A}\PY{p}{[}\PY{n}{pos}\PY{p}{[}\PY{n}{line}\PY{p}{[}\PY{l+m+mi}{2}\PY{p}{]}\PY{p}{]}\PY{p}{]}\PY{p}{[}\PY{n}{pos}\PY{p}{[}\PY{n}{line}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{]}\PY{p}{]}\PY{o}{\PYZhy{}}\PY{o}{=}\PY{l+m+mi}{1}\PY{o}{/}\PY{n}{impedance}
+            \PY{c+c1}{\PYZsh{}Find Voltage Sources}
+            \PY{k}{elif}\PY{p}{(}\PY{n}{line}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]} \PY{o+ow}{in} \PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{V}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{v}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}\PY{p}{:}
+                \PY{n}{A}\PY{p}{[}\PY{n}{pos}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{I}\PY{l+s+s2}{\PYZdq{}}\PY{o}{+}\PY{n}{line}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{]}\PY{p}{]}\PY{p}{[}\PY{n}{pos}\PY{p}{[}\PY{n}{line}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{]}\PY{p}{]}\PY{o}{=}\PY{l+m+mi}{1}
+                \PY{n}{A}\PY{p}{[}\PY{n}{pos}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{I}\PY{l+s+s2}{\PYZdq{}}\PY{o}{+}\PY{n}{line}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{]}\PY{p}{]}\PY{p}{[}\PY{n}{pos}\PY{p}{[}\PY{n}{line}\PY{p}{[}\PY{l+m+mi}{2}\PY{p}{]}\PY{p}{]}\PY{p}{]}\PY{o}{=}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}
+                \PY{n}{b}\PY{p}{[}\PY{n}{pos}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{I}\PY{l+s+s2}{\PYZdq{}}\PY{o}{+}\PY{n}{line}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{]}\PY{p}{]}\PY{o}{=}\PY{n+nb}{float}\PY{p}{(}\PY{n}{line}\PY{p}{[}\PY{l+m+mi}{4}\PY{p}{]}\PY{p}{)}
+                \PY{n}{A}\PY{p}{[}\PY{n}{pos}\PY{p}{[}\PY{n}{line}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{]}\PY{p}{]}\PY{p}{[}\PY{n}{pos}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{I}\PY{l+s+s2}{\PYZdq{}}\PY{o}{+}\PY{n}{line}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{]}\PY{p}{]}\PY{o}{=}\PY{l+m+mi}{1}
+                \PY{n}{A}\PY{p}{[}\PY{n}{pos}\PY{p}{[}\PY{n}{line}\PY{p}{[}\PY{l+m+mi}{2}\PY{p}{]}\PY{p}{]}\PY{p}{]}\PY{p}{[}\PY{n}{pos}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{I}\PY{l+s+s2}{\PYZdq{}}\PY{o}{+}\PY{n}{line}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{]}\PY{p}{]}\PY{o}{=}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}
+            \PY{c+c1}{\PYZsh{}Find Current Sources}
+            \PY{k}{elif}\PY{p}{(}\PY{n}{line}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]} \PY{o+ow}{in} \PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{I}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{i}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}\PY{p}{:}
+                \PY{n}{current}\PY{o}{=}\PY{n+nb}{float}\PY{p}{(}\PY{n}{line}\PY{p}{[}\PY{l+m+mi}{4}\PY{p}{]}\PY{p}{)}
+                \PY{n}{b}\PY{p}{[}\PY{n}{pos}\PY{p}{[}\PY{n}{line}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{]}\PY{p}{]}\PY{o}{\PYZhy{}}\PY{o}{=}\PY{n}{current}
+                \PY{n}{b}\PY{p}{[}\PY{n}{pos}\PY{p}{[}\PY{n}{line}\PY{p}{[}\PY{l+m+mi}{2}\PY{p}{]}\PY{p}{]}\PY{p}{]}\PY{o}{+}\PY{o}{=}\PY{n}{current}
+            \PY{k}{else}\PY{p}{:}
+                \PY{c+c1}{\PYZsh{}Error if we have Inductance or Capacitance with DC}
+                \PY{c+c1}{\PYZsh{}because transient analysis is not possible with Gauss Eliimination directly. }
+                \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{.netlist input Error}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+                \PY{k}{return}
+        \PY{k}{if}\PY{p}{(}\PY{n}{line}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{o}{==}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{.circuit}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{:}
+            \PY{n}{check}\PY{o}{=}\PY{k+kc}{True}
+
+    \PY{c+c1}{\PYZsh{}Removing Redundant Ground Node to get the Official Form of MNA}
+    \PY{n}{A}\PY{o}{.}\PY{n}{pop}\PY{p}{(}\PY{n}{pos}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{GND}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{p}{)}
+    \PY{n}{b}\PY{o}{.}\PY{n}{pop}\PY{p}{(}\PY{n}{pos}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{GND}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{p}{)}
+    \PY{k}{for} \PY{n}{row} \PY{o+ow}{in} \PY{n}{A}\PY{p}{:}
+        \PY{n}{row}\PY{o}{.}\PY{n}{pop}\PY{p}{(}\PY{n}{pos}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{GND}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{p}{)}
+    \PY{n}{variables}\PY{o}{.}\PY{n}{pop}\PY{p}{(}\PY{n}{pos}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{GND}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{p}{)}
+    \PY{k}{for} \PY{n}{key} \PY{o+ow}{in} \PY{n}{pos}\PY{p}{:}
+        \PY{k}{if}\PY{p}{(}\PY{n}{pos}\PY{p}{[}\PY{n}{key}\PY{p}{]}\PY{o}{\PYZgt{}}\PY{n}{pos}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{GND}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{p}{)}\PY{p}{:}
+            \PY{n}{pos}\PY{p}{[}\PY{n}{key}\PY{p}{]}\PY{o}{\PYZhy{}}\PY{o}{=}\PY{l+m+mi}{1}
+    \PY{k}{del} \PY{n}{pos}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{GND}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}
+    \PY{c+c1}{\PYZsh{}It has been reduced to the MNA form}
+    
+    \PY{n}{x}\PY{o}{=}\PY{n}{Gauss\PYZus{}Elimination}\PY{p}{(}\PY{n}{A}\PY{p}{,}\PY{n}{b}\PY{p}{)}
+    \PY{n}{print\PYZus{}MNA}\PY{p}{(}\PY{n}{x}\PY{p}{,}\PY{n}{variables}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \texttt{dc\_solver()} first creates the matrices A and B. Then it
+generates the MNA Matrices and solves it using Gauss Elimination. Note:
+Voltage Sources have \emph{positive termial} towards \textbf{node1}.
+Current Sources have \emph{positive terminal} towards \textbf{node2}.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{13}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{import} \PY{n+nn}{math}
+\PY{k}{def} \PY{n+nf}{ac\PYZus{}solver}\PY{p}{(}\PY{n}{pos}\PY{p}{,}\PY{n}{ckt\PYZus{}data}\PY{p}{,}\PY{n}{variables}\PY{p}{)}\PY{p}{:}
+    \PY{n}{freq\PYZus{}list}\PY{o}{=}\PY{p}{[}\PY{p}{]}
+    \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n+nb}{len}\PY{p}{(}\PY{n}{ckt\PYZus{}data}\PY{p}{)}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{0}\PY{p}{,}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{)}\PY{p}{:}
+        \PY{k}{if}\PY{p}{(}\PY{n+nb}{len}\PY{p}{(}\PY{n}{ckt\PYZus{}data}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{p}{)}\PY{o}{==}\PY{l+m+mi}{0}\PY{p}{)}\PY{p}{:}
+            \PY{k}{continue}
+        \PY{k}{if}\PY{p}{(}\PY{n}{ckt\PYZus{}data}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{o}{==}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{.ac}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{:}
+            \PY{n}{freq\PYZus{}list}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n+nb}{float}\PY{p}{(}\PY{n}{ckt\PYZus{}data}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{p}{[}\PY{l+m+mi}{2}\PY{p}{]}\PY{p}{)}\PY{p}{)}
+    \PY{n}{freq\PYZus{}list}\PY{o}{=}\PY{n+nb}{list}\PY{p}{(}\PY{n+nb}{set}\PY{p}{(}\PY{n}{freq\PYZus{}list}\PY{p}{)}\PY{p}{)}
+    \PY{n}{frequency}\PY{o}{=}\PY{n}{freq\PYZus{}list}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}
+
+    \PY{c+c1}{\PYZsh{}check for Multiple Frequencies.}
+    \PY{k}{if}\PY{p}{(}\PY{n+nb}{len}\PY{p}{(}\PY{n}{freq\PYZus{}list}\PY{p}{)}\PY{o}{!=}\PY{l+m+mi}{1}\PY{p}{)}\PY{p}{:}
+        \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Multiple frequencies}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+        \PY{k}{return}
+
+    \PY{c+c1}{\PYZsh{} Solve the circuit for single frequency .}
+    \PY{n}{omega}\PY{o}{=}\PY{l+m+mi}{2}\PY{o}{*}\PY{n}{math}\PY{o}{.}\PY{n}{pi}\PY{o}{*}\PY{n}{frequency}
+    \PY{n}{l}\PY{o}{=}\PY{n+nb}{len}\PY{p}{(}\PY{n}{variables}\PY{p}{)}
+    \PY{n}{A}\PY{o}{=}\PY{p}{[}\PY{p}{[}\PY{l+m+mi}{0}\PY{o}{+}\PY{l+m+mi}{0}\PY{n}{j} \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n}{l}\PY{p}{)}\PY{p}{]} \PY{k}{for} \PY{n}{j} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n}{l}\PY{p}{)}\PY{p}{]}
+    \PY{n}{b}\PY{o}{=}\PY{p}{[}\PY{l+m+mi}{0}\PY{o}{+}\PY{l+m+mi}{0}\PY{n}{j} \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n}{l}\PY{p}{)}\PY{p}{]}
+
+    \PY{n}{check}\PY{o}{=}\PY{k+kc}{False}
+    \PY{n}{sources}\PY{o}{=}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{V}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{v}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{I}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{i}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
+    \PY{n}{im\PYZus{}j}\PY{o}{=}\PY{n+nb}{complex}\PY{p}{(}\PY{l+m+mi}{0}\PY{o}{+}\PY{l+m+mi}{1}\PY{n}{j}\PY{p}{)}
+    \PY{k}{for} \PY{n}{line} \PY{o+ow}{in} \PY{n}{ckt\PYZus{}data}\PY{p}{:}
+        \PY{k}{if}\PY{p}{(}\PY{n+nb}{len}\PY{p}{(}\PY{n}{line}\PY{p}{)}\PY{o}{==}\PY{l+m+mi}{0}\PY{p}{)}\PY{p}{:}
+            \PY{k}{continue}
+        \PY{k}{if}\PY{p}{(}\PY{n}{line}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{o}{==}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{.end}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{:}
+            \PY{n}{check}\PY{o}{=}\PY{k+kc}{False}
+            \PY{k}{break}
+        \PY{k}{if}\PY{p}{(}\PY{n}{check}\PY{o}{==}\PY{k+kc}{True}\PY{p}{)}\PY{p}{:}
+            \PY{k}{if}\PY{p}{(}\PY{n}{line}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]} \PY{o+ow}{not} \PY{o+ow}{in} \PY{n}{sources}\PY{p}{)}\PY{p}{:}
+                \PY{c+c1}{\PYZsh{}Resistor}
+                \PY{n}{impedance}\PY{o}{=}\PY{n+nb}{complex}\PY{p}{(}\PY{n+nb}{float}\PY{p}{(}\PY{n}{line}\PY{p}{[}\PY{l+m+mi}{3}\PY{p}{]}\PY{p}{)}\PY{p}{)}
+                \PY{c+c1}{\PYZsh{}Capacitor}
+                \PY{k}{if}\PY{p}{(}\PY{n}{line}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]} \PY{o+ow}{in} \PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{C}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{c}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}\PY{p}{:}
+                    \PY{n}{impedance}\PY{o}{=}\PY{l+m+mi}{1}\PY{o}{/}\PY{p}{(}\PY{n}{im\PYZus{}j}\PY{o}{*}\PY{n}{impedance}\PY{o}{*}\PY{n}{omega}\PY{p}{)}
+                \PY{c+c1}{\PYZsh{}Inductor}
+                \PY{k}{if}\PY{p}{(}\PY{n}{line}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]} \PY{o+ow}{in} \PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{L}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{l}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}\PY{p}{:}
+                    \PY{n}{impedance}\PY{o}{=}\PY{n}{im\PYZus{}j}\PY{o}{*}\PY{n}{impedance}\PY{o}{*}\PY{n}{omega}
+                \PY{n}{A}\PY{p}{[}\PY{n}{pos}\PY{p}{[}\PY{n}{line}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{]}\PY{p}{]}\PY{p}{[}\PY{n}{pos}\PY{p}{[}\PY{n}{line}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{]}\PY{p}{]}\PY{o}{+}\PY{o}{=}\PY{l+m+mi}{1}\PY{o}{/}\PY{n}{impedance}
+                \PY{n}{A}\PY{p}{[}\PY{n}{pos}\PY{p}{[}\PY{n}{line}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{]}\PY{p}{]}\PY{p}{[}\PY{n}{pos}\PY{p}{[}\PY{n}{line}\PY{p}{[}\PY{l+m+mi}{2}\PY{p}{]}\PY{p}{]}\PY{p}{]}\PY{o}{\PYZhy{}}\PY{o}{=}\PY{l+m+mi}{1}\PY{o}{/}\PY{n}{impedance}
+                \PY{n}{A}\PY{p}{[}\PY{n}{pos}\PY{p}{[}\PY{n}{line}\PY{p}{[}\PY{l+m+mi}{2}\PY{p}{]}\PY{p}{]}\PY{p}{]}\PY{p}{[}\PY{n}{pos}\PY{p}{[}\PY{n}{line}\PY{p}{[}\PY{l+m+mi}{2}\PY{p}{]}\PY{p}{]}\PY{p}{]}\PY{o}{+}\PY{o}{=}\PY{l+m+mi}{1}\PY{o}{/}\PY{n}{impedance}
+                \PY{n}{A}\PY{p}{[}\PY{n}{pos}\PY{p}{[}\PY{n}{line}\PY{p}{[}\PY{l+m+mi}{2}\PY{p}{]}\PY{p}{]}\PY{p}{]}\PY{p}{[}\PY{n}{pos}\PY{p}{[}\PY{n}{line}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{]}\PY{p}{]}\PY{o}{\PYZhy{}}\PY{o}{=}\PY{l+m+mi}{1}\PY{o}{/}\PY{n}{impedance}
+            \PY{c+c1}{\PYZsh{}Voltage Source}
+            \PY{k}{elif}\PY{p}{(}\PY{n}{line}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]} \PY{o+ow}{in} \PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{V}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{v}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}\PY{p}{:}
+                \PY{n}{A}\PY{p}{[}\PY{n}{pos}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{I}\PY{l+s+s2}{\PYZdq{}}\PY{o}{+}\PY{n}{line}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{]}\PY{p}{]}\PY{p}{[}\PY{n}{pos}\PY{p}{[}\PY{n}{line}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{]}\PY{p}{]}\PY{o}{=}\PY{l+m+mi}{1}
+                \PY{n}{A}\PY{p}{[}\PY{n}{pos}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{I}\PY{l+s+s2}{\PYZdq{}}\PY{o}{+}\PY{n}{line}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{]}\PY{p}{]}\PY{p}{[}\PY{n}{pos}\PY{p}{[}\PY{n}{line}\PY{p}{[}\PY{l+m+mi}{2}\PY{p}{]}\PY{p}{]}\PY{p}{]}\PY{o}{=}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}
+                \PY{n}{angle}\PY{o}{=}\PY{n+nb}{float}\PY{p}{(}\PY{n}{line}\PY{p}{[}\PY{l+m+mi}{5}\PY{p}{]}\PY{p}{)}\PY{o}{*}\PY{n}{math}\PY{o}{.}\PY{n}{pi}\PY{o}{/}\PY{l+m+mi}{180}
+                \PY{n}{b}\PY{p}{[}\PY{n}{pos}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{I}\PY{l+s+s2}{\PYZdq{}}\PY{o}{+}\PY{n}{line}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{]}\PY{p}{]}\PY{o}{=}\PY{n}{math}\PY{o}{.}\PY{n}{cos}\PY{p}{(}\PY{n}{angle}\PY{p}{)}\PY{o}{*}\PY{n+nb}{float}\PY{p}{(}\PY{n}{line}\PY{p}{[}\PY{l+m+mi}{4}\PY{p}{]}\PY{p}{)}\PY{o}{+}\PY{n}{math}\PY{o}{.}\PY{n}{sin}\PY{p}{(}\PY{n}{angle}\PY{p}{)}\PY{o}{*}\PY{n+nb}{float}\PY{p}{(}\PY{n}{line}\PY{p}{[}\PY{l+m+mi}{4}\PY{p}{]}\PY{p}{)}\PY{o}{*}\PY{n}{im\PYZus{}j}
+                \PY{n}{A}\PY{p}{[}\PY{n}{pos}\PY{p}{[}\PY{n}{line}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{]}\PY{p}{]}\PY{p}{[}\PY{n}{pos}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{I}\PY{l+s+s2}{\PYZdq{}}\PY{o}{+}\PY{n}{line}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{]}\PY{p}{]}\PY{o}{=}\PY{l+m+mi}{1}
+                \PY{n}{A}\PY{p}{[}\PY{n}{pos}\PY{p}{[}\PY{n}{line}\PY{p}{[}\PY{l+m+mi}{2}\PY{p}{]}\PY{p}{]}\PY{p}{]}\PY{p}{[}\PY{n}{pos}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{I}\PY{l+s+s2}{\PYZdq{}}\PY{o}{+}\PY{n}{line}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{]}\PY{p}{]}\PY{o}{=}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}
+            \PY{c+c1}{\PYZsh{}Current Source}
+            \PY{k}{elif}\PY{p}{(}\PY{n}{line}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]} \PY{o+ow}{in} \PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{I}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{i}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}\PY{p}{:}
+                \PY{n}{angle}\PY{o}{=}\PY{n+nb}{float}\PY{p}{(}\PY{n}{line}\PY{p}{[}\PY{l+m+mi}{5}\PY{p}{]}\PY{p}{)}\PY{o}{*}\PY{n}{math}\PY{o}{.}\PY{n}{pi}\PY{o}{/}\PY{l+m+mi}{180}
+                \PY{n}{current}\PY{o}{=}\PY{n}{math}\PY{o}{.}\PY{n}{cos}\PY{p}{(}\PY{n}{angle}\PY{p}{)}\PY{o}{*}\PY{n+nb}{float}\PY{p}{(}\PY{n}{line}\PY{p}{[}\PY{l+m+mi}{4}\PY{p}{]}\PY{p}{)}\PY{o}{+}\PY{n}{math}\PY{o}{.}\PY{n}{sin}\PY{p}{(}\PY{n}{angle}\PY{p}{)}\PY{o}{*}\PY{n+nb}{float}\PY{p}{(}\PY{n}{line}\PY{p}{[}\PY{l+m+mi}{4}\PY{p}{]}\PY{p}{)}\PY{o}{*}\PY{n}{im\PYZus{}j}
+                \PY{n}{b}\PY{p}{[}\PY{n}{pos}\PY{p}{[}\PY{n}{line}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{]}\PY{p}{]}\PY{o}{\PYZhy{}}\PY{o}{=}\PY{n}{current}
+                \PY{n}{b}\PY{p}{[}\PY{n}{pos}\PY{p}{[}\PY{n}{line}\PY{p}{[}\PY{l+m+mi}{2}\PY{p}{]}\PY{p}{]}\PY{p}{]}\PY{o}{+}\PY{o}{=}\PY{n}{current}
+            \PY{c+c1}{\PYZsh{}Some Error in the .netlist fromat.}
+            \PY{k}{else}\PY{p}{:}
+                \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{.netlist input Error}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+                \PY{k}{return}
+        \PY{k}{if}\PY{p}{(}\PY{n}{line}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{o}{==}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{.circuit}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{:}
+            \PY{n}{check}\PY{o}{=}\PY{k+kc}{True}
+    \PY{c+c1}{\PYZsh{}Removing Ground Node to get the Official Form of MNA}
+    \PY{n}{A}\PY{o}{.}\PY{n}{pop}\PY{p}{(}\PY{n}{pos}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{GND}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{p}{)}
+    \PY{n}{b}\PY{o}{.}\PY{n}{pop}\PY{p}{(}\PY{n}{pos}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{GND}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{p}{)}
+    \PY{k}{for} \PY{n}{row} \PY{o+ow}{in} \PY{n}{A}\PY{p}{:}
+        \PY{n}{row}\PY{o}{.}\PY{n}{pop}\PY{p}{(}\PY{n}{pos}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{GND}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{p}{)}
+    \PY{n}{variables}\PY{o}{.}\PY{n}{pop}\PY{p}{(}\PY{n}{pos}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{GND}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{p}{)}
+    \PY{k}{for} \PY{n}{key} \PY{o+ow}{in} \PY{n}{pos}\PY{p}{:}
+        \PY{k}{if}\PY{p}{(}\PY{n}{pos}\PY{p}{[}\PY{n}{key}\PY{p}{]}\PY{o}{\PYZgt{}}\PY{n}{pos}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{GND}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{p}{)}\PY{p}{:}
+            \PY{n}{pos}\PY{p}{[}\PY{n}{key}\PY{p}{]}\PY{o}{\PYZhy{}}\PY{o}{=}\PY{l+m+mi}{1}
+    \PY{k}{del} \PY{n}{pos}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{GND}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}      
+    \PY{c+c1}{\PYZsh{}It has been reduced to the MNA form}
+    
+    \PY{n}{x}\PY{o}{=}\PY{n}{Gauss\PYZus{}Elimination}\PY{p}{(}\PY{n}{A}\PY{p}{,}\PY{n}{b}\PY{p}{)}
+    \PY{n}{print\PYZus{}MNA}\PY{p}{(}\PY{n}{x}\PY{p}{,}\PY{n}{variables}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \texttt{ac\_solver()} first creates the matrices A and B and also checks
+if it has Multiple Frequencies. Then it generates the MNA Matrices and
+solves it using Gauss Elimination. Note: Voltage Sources have
+\emph{positive termial} towards \textbf{node1}. Current Sources have
+\emph{positive terminal} towards \textbf{node2}. The impedance of
+Capacitor is 1/jwC . The impedance of Inductor is jwL .
+
+The equations are solved in the complex numbers domain.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{14}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{import} \PY{n+nn}{cmath}
+\PY{k}{def} \PY{n+nf}{print\PYZus{}MNA}\PY{p}{(}\PY{n}{x}\PY{p}{,}\PY{n}{variables}\PY{p}{)}\PY{p}{:}
+    \PY{c+c1}{\PYZsh{}Convert Radians to Degree}
+    \PY{k}{def} \PY{n+nf}{radians\PYZus{}to\PYZus{}degree}\PY{p}{(}\PY{n}{angle}\PY{p}{)}\PY{p}{:}
+        \PY{k}{return} \PY{n}{angle}\PY{o}{*}\PY{l+m+mi}{180}\PY{o}{/}\PY{n}{math}\PY{o}{.}\PY{n}{pi}
+    \PY{c+c1}{\PYZsh{}Use Scientific Notation for printing the values of thec Circuit Variables.}
+    \PY{k}{def} \PY{n+nf}{conv}\PY{p}{(}\PY{n}{value}\PY{p}{)}\PY{p}{:}
+        \PY{k}{if}\PY{p}{(}\PY{n+nb}{isinstance}\PY{p}{(}\PY{n}{value}\PY{p}{,}\PY{n+nb}{complex}\PY{p}{)}\PY{p}{)}\PY{p}{:}
+            \PY{n}{magnitude}\PY{o}{=}\PY{n+nb}{abs}\PY{p}{(}\PY{n}{value}\PY{p}{)}
+            \PY{n}{angle}\PY{o}{=}\PY{n}{radians\PYZus{}to\PYZus{}degree}\PY{p}{(}\PY{n}{cmath}\PY{o}{.}\PY{n}{phase}\PY{p}{(}\PY{n}{value}\PY{p}{)}\PY{p}{)}
+            \PY{k}{return} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+si}{\PYZob{}:e\PYZcb{}}\PY{l+s+s2}{\PYZdq{}}\PY{o}{.}\PY{n}{format}\PY{p}{(}\PY{n}{magnitude}\PY{p}{)}\PY{o}{+}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{ \PYZlt{}}\PY{l+s+s1}{\PYZsq{}}\PY{o}{+}\PY{n+nb}{str}\PY{p}{(}\PY{n}{angle}\PY{p}{)}\PY{o}{+}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{ degree\PYZgt{}}\PY{l+s+s1}{\PYZsq{}}
+        \PY{k}{else}\PY{p}{:}
+            \PY{k}{return} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+si}{\PYZob{}:e\PYZcb{}}\PY{l+s+s2}{\PYZdq{}}\PY{o}{.}\PY{n}{format}\PY{p}{(}\PY{n}{value}\PY{p}{)}
+    \PY{c+c1}{\PYZsh{}Finally Print the Circuit Variables}
+    \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n+nb}{len}\PY{p}{(}\PY{n}{variables}\PY{p}{)}\PY{p}{)}\PY{p}{:}
+        \PY{k}{if}\PY{p}{(}\PY{n}{variables}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{o}{==}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{I}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{:}
+            \PY{n+nb}{print}\PY{p}{(}\PY{n}{variables}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{p}{,}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{ = }\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}\PY{n}{conv}\PY{p}{(}\PY{n}{x}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{p}{)}\PY{p}{,}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{ A}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}\PY{n}{sep}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+        \PY{k}{else}\PY{p}{:}
+            \PY{n+nb}{print}\PY{p}{(}\PY{n}{variables}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{p}{,}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{ = }\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}\PY{n}{conv}\PY{p}{(}\PY{n}{x}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{p}{)}\PY{p}{,}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{ V}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}\PY{n}{sep}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    The function \texttt{print\_MNA} changes the Rectangular from of Complex
+Numbers to the Polar Form for AC Circuits. For DC Circuits it just
+prints the circuit variables as it is. All the values are printed in the
+Scientific Notation.
+\newpage
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{15}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{circuits}\PY{o}{=}\PY{p}{[}
+    \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{ckt1.netlist}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}
+    \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{ckt2.netlist}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}
+    \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{ckt3.netlist}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}
+    \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{ckt4.netlist}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}
+    \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{ckt5.netlist}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}
+    \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{ckt6.netlist}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}
+    \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{ckt7.netlist}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}
+
+\PY{k}{for} \PY{n}{filename} \PY{o+ow}{in} \PY{n}{circuits}\PY{p}{:}
+    \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Circuit Variables for}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}\PY{n}{filename}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{:}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+    \PY{n}{circuit\PYZus{}solver}\PY{p}{(}\PY{n}{filename}\PY{p}{)}
+    \PY{n+nb}{print}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Circuit Variables for ckt1.netlist :
+IV1 = -5.000000e-04 A
+n1 = 0.000000e+00 V
+n2 = 0.000000e+00 V
+n3 = 0.000000e+00 V
+n4 = -5.000000e+00 V
+
+Circuit Variables for ckt2.netlist :
+Multiple Frequencies : Involves both AC and DC Sources
+
+Circuit Variables for ckt3.netlist :
+IV1 = -4.970760e-03 A
+n1 = -1.000000e+01 V
+n2 = -5.029240e+00 V
+n3 = -2.573099e+00 V
+n4 = -1.403509e+00 V
+n5 = -9.356725e-01 V
+
+Circuit Variables for ckt4.netlist :
+IV1 = -2.222222e+00 A
+n1 = -1.000000e+01 V
+n2 = -5.555556e+00 V
+n3 = -3.703704e+00 V
+
+Circuit Variables for ckt5.netlist :
+IV1 = -1.000000e+00 A
+n1 = -1.000000e+01 V
+
+Circuit Variables for ckt6.netlist :
+IV1 = 5.000000e-03 <179.99964911890655 degree> A
+n1 = 3.141593e-05 <-90.00035088109347 degree> V
+n2 = 3.062015e-05 <-90.00035088109347 degree> V
+n3 = 5.000000e+00 <-180.0 degree> V
+
+Circuit Variables for ckt7.netlist :
+n1 = 8.164558e-04 <-89.9999906441059 degree> V
+
+    \end{Verbatim}
+
+    \hypertarget{conclusion}{%
+\section{Conclusion}\label{conclusion}}
+
+I have verified these answers by simulating the circuits given here in
+\textbf{LTSpice} All Answers are \emph{correctly matching} with the
+values obtained from LTSpice when the circuit reaches Steady State.
+
+
+    % Add a bibliography block to the postdoc
+    
+    
+    
+\end{document}

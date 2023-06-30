@@ -1,0 +1,21 @@
+.circuit
+R1 6 5 50
+R2 1 2 20
+R3 GND 3 30
+R4 5 7 40
+R5 3 4 50
+V1 1 GND ac 4 30
+V3 6 1 ac 5 45
+V2 2 GND ac 6 60
+V4 5 4 ac 10 90
+I1 2 5 ac 5 60
+I2 4 7 ac 15 15
+I3 4 3 ac 10 30
+.end
+.ac V1 50
+.ac V2 50
+.ac V3 50
+.ac V4 50
+.ac I1 50
+.ac I2 50
+.ac I3 50

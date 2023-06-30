@@ -1,0 +1,768 @@
+\documentclass[11pt]{article}
+
+    \usepackage[breakable]{tcolorbox}
+    \usepackage{parskip} % Stop auto-indenting (to mimic markdown behaviour)
+    
+
+    % Basic figure setup, for now with no caption control since it's done
+    % automatically by Pandoc (which extracts ![](path) syntax from Markdown).
+    \usepackage{graphicx}
+    % Maintain compatibility with old templates. Remove in nbconvert 6.0
+    \let\Oldincludegraphics\includegraphics
+    % Ensure that by default, figures have no caption (until we provide a
+    % proper Figure object with a Caption API and a way to capture that
+    % in the conversion process - todo).
+    \usepackage{caption}
+    \DeclareCaptionFormat{nocaption}{}
+    \captionsetup{format=nocaption,aboveskip=0pt,belowskip=0pt}
+
+    \usepackage{float}
+    \floatplacement{figure}{H} % forces figures to be placed at the correct location
+    \usepackage{xcolor} % Allow colors to be defined
+    \usepackage{enumerate} % Needed for markdown enumerations to work
+    \usepackage{geometry} % Used to adjust the document margins
+    \usepackage{amsmath} % Equations
+    \usepackage{amssymb} % Equations
+    \usepackage{textcomp} % defines textquotesingle
+    % Hack from http://tex.stackexchange.com/a/47451/13684:
+    \AtBeginDocument{%
+        \def\PYZsq{\textquotesingle}% Upright quotes in Pygmentized code
+    }
+    \usepackage{upquote} % Upright quotes for verbatim code
+    \usepackage{eurosym} % defines \euro
+
+    \usepackage{iftex}
+    \ifPDFTeX
+        \usepackage[T1]{fontenc}
+        \IfFileExists{alphabeta.sty}{
+              \usepackage{alphabeta}
+          }{
+              \usepackage[mathletters]{ucs}
+              \usepackage[utf8x]{inputenc}
+          }
+    \else
+        \usepackage{fontspec}
+        \usepackage{unicode-math}
+    \fi
+
+    \usepackage{fancyvrb} % verbatim replacement that allows latex
+    \usepackage{grffile} % extends the file name processing of package graphics
+                         % to support a larger range
+    \makeatletter % fix for old versions of grffile with XeLaTeX
+    \@ifpackagelater{grffile}{2019/11/01}
+    {
+      % Do nothing on new versions
+    }
+    {
+      \def\Gread@@xetex#1{%
+        \IfFileExists{"\Gin@base".bb}%
+        {\Gread@eps{\Gin@base.bb}}%
+        {\Gread@@xetex@aux#1}%
+      }
+    }
+    \makeatother
+    \usepackage[Export]{adjustbox} % Used to constrain images to a maximum size
+    \adjustboxset{max size={0.9\linewidth}{0.9\paperheight}}
+
+    % The hyperref package gives us a pdf with properly built
+    % internal navigation ('pdf bookmarks' for the table of contents,
+    % internal cross-reference links, web links for URLs, etc.)
+    \usepackage{hyperref}
+    % The default LaTeX title has an obnoxious amount of whitespace. By default,
+    % titling removes some of it. It also provides customization options.
+    \usepackage{titling}
+    \usepackage{longtable} % longtable support required by pandoc >1.10
+    \usepackage{booktabs}  % table support for pandoc > 1.12.2
+    \usepackage{array}     % table support for pandoc >= 2.11.3
+    \usepackage{calc}      % table minipage width calculation for pandoc >= 2.11.1
+    \usepackage[inline]{enumitem} % IRkernel/repr support (it uses the enumerate* environment)
+    \usepackage[normalem]{ulem} % ulem is needed to support strikethroughs (\sout)
+                                % normalem makes italics be italics, not underlines
+    \usepackage{mathrsfs}
+    
+
+    
+    % Colors for the hyperref package
+    \definecolor{urlcolor}{rgb}{0,.145,.698}
+    \definecolor{linkcolor}{rgb}{.71,0.21,0.01}
+    \definecolor{citecolor}{rgb}{.12,.54,.11}
+
+    % ANSI colors
+    \definecolor{ansi-black}{HTML}{3E424D}
+    \definecolor{ansi-black-intense}{HTML}{282C36}
+    \definecolor{ansi-red}{HTML}{E75C58}
+    \definecolor{ansi-red-intense}{HTML}{B22B31}
+    \definecolor{ansi-green}{HTML}{00A250}
+    \definecolor{ansi-green-intense}{HTML}{007427}
+    \definecolor{ansi-yellow}{HTML}{DDB62B}
+    \definecolor{ansi-yellow-intense}{HTML}{B27D12}
+    \definecolor{ansi-blue}{HTML}{208FFB}
+    \definecolor{ansi-blue-intense}{HTML}{0065CA}
+    \definecolor{ansi-magenta}{HTML}{D160C4}
+    \definecolor{ansi-magenta-intense}{HTML}{A03196}
+    \definecolor{ansi-cyan}{HTML}{60C6C8}
+    \definecolor{ansi-cyan-intense}{HTML}{258F8F}
+    \definecolor{ansi-white}{HTML}{C5C1B4}
+    \definecolor{ansi-white-intense}{HTML}{A1A6B2}
+    \definecolor{ansi-default-inverse-fg}{HTML}{FFFFFF}
+    \definecolor{ansi-default-inverse-bg}{HTML}{000000}
+
+    % common color for the border for error outputs.
+    \definecolor{outerrorbackground}{HTML}{FFDFDF}
+
+    % commands and environments needed by pandoc snippets
+    % extracted from the output of `pandoc -s`
+    \providecommand{\tightlist}{%
+      \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+    \DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+    % Add ',fontsize=\small' for more characters per line
+    \newenvironment{Shaded}{}{}
+    \newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.56,0.13,0.00}{{#1}}}
+    \newcommand{\DecValTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\FloatTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\CharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\StringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\CommentTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textit{{#1}}}}
+    \newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{{#1}}}
+    \newcommand{\AlertTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.02,0.16,0.49}{{#1}}}
+    \newcommand{\RegionMarkerTok}[1]{{#1}}
+    \newcommand{\ErrorTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\NormalTok}[1]{{#1}}
+
+    % Additional commands for more recent versions of Pandoc
+    \newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.53,0.00,0.00}{{#1}}}
+    \newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.73,0.40,0.53}{{#1}}}
+    \newcommand{\ImportTok}[1]{{#1}}
+    \newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.73,0.13,0.13}{\textit{{#1}}}}
+    \newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\VariableTok}[1]{\textcolor[rgb]{0.10,0.09,0.49}{{#1}}}
+    \newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.40,0.40,0.40}{{#1}}}
+    \newcommand{\BuiltInTok}[1]{{#1}}
+    \newcommand{\ExtensionTok}[1]{{#1}}
+    \newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.74,0.48,0.00}{{#1}}}
+    \newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.49,0.56,0.16}{{#1}}}
+    \newcommand{\InformationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\WarningTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+
+
+    % Define a nice break command that doesn't care if a line doesn't already
+    % exist.
+    \def\br{\hspace*{\fill} \\* }
+    % Math Jax compatibility definitions
+    \def\gt{>}
+    \def\lt{<}
+    \let\Oldtex\TeX
+    \let\Oldlatex\LaTeX
+    \renewcommand{\TeX}{\textrm{\Oldtex}}
+    \renewcommand{\LaTeX}{\textrm{\Oldlatex}}
+    % Document parameters
+    % Document title
+    \title{EE2703 - Week 7 : Annealing\\
+Aayush Patel, EE21B003}
+    
+    
+    
+    
+    
+% Pygments definitions
+\makeatletter
+\def\PY@reset{\let\PY@it=\relax \let\PY@bf=\relax%
+    \let\PY@ul=\relax \let\PY@tc=\relax%
+    \let\PY@bc=\relax \let\PY@ff=\relax}
+\def\PY@tok#1{\csname PY@tok@#1\endcsname}
+\def\PY@toks#1+{\ifx\relax#1\empty\else%
+    \PY@tok{#1}\expandafter\PY@toks\fi}
+\def\PY@do#1{\PY@bc{\PY@tc{\PY@ul{%
+    \PY@it{\PY@bf{\PY@ff{#1}}}}}}}
+\def\PY#1#2{\PY@reset\PY@toks#1+\relax+\PY@do{#2}}
+
+\@namedef{PY@tok@w}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.73,0.73}{##1}}}
+\@namedef{PY@tok@c}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cp}{\def\PY@tc##1{\textcolor[rgb]{0.61,0.40,0.00}{##1}}}
+\@namedef{PY@tok@k}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kp}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kt}{\def\PY@tc##1{\textcolor[rgb]{0.69,0.00,0.25}{##1}}}
+\@namedef{PY@tok@o}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@ow}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\@namedef{PY@tok@nb}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@nf}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@nc}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@nn}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@ne}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.80,0.25,0.22}{##1}}}
+\@namedef{PY@tok@nv}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@no}{\def\PY@tc##1{\textcolor[rgb]{0.53,0.00,0.00}{##1}}}
+\@namedef{PY@tok@nl}{\def\PY@tc##1{\textcolor[rgb]{0.46,0.46,0.00}{##1}}}
+\@namedef{PY@tok@ni}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.44,0.44,0.44}{##1}}}
+\@namedef{PY@tok@na}{\def\PY@tc##1{\textcolor[rgb]{0.41,0.47,0.13}{##1}}}
+\@namedef{PY@tok@nt}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@nd}{\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\@namedef{PY@tok@s}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sd}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@si}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.64,0.35,0.47}{##1}}}
+\@namedef{PY@tok@se}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.67,0.36,0.12}{##1}}}
+\@namedef{PY@tok@sr}{\def\PY@tc##1{\textcolor[rgb]{0.64,0.35,0.47}{##1}}}
+\@namedef{PY@tok@ss}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@sx}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@m}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@gh}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\@namedef{PY@tok@gu}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.50,0.00,0.50}{##1}}}
+\@namedef{PY@tok@gd}{\def\PY@tc##1{\textcolor[rgb]{0.63,0.00,0.00}{##1}}}
+\@namedef{PY@tok@gi}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.52,0.00}{##1}}}
+\@namedef{PY@tok@gr}{\def\PY@tc##1{\textcolor[rgb]{0.89,0.00,0.00}{##1}}}
+\@namedef{PY@tok@ge}{\let\PY@it=\textit}
+\@namedef{PY@tok@gs}{\let\PY@bf=\textbf}
+\@namedef{PY@tok@gp}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\@namedef{PY@tok@go}{\def\PY@tc##1{\textcolor[rgb]{0.44,0.44,0.44}{##1}}}
+\@namedef{PY@tok@gt}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.27,0.87}{##1}}}
+\@namedef{PY@tok@err}{\def\PY@bc##1{{\setlength{\fboxsep}{\string -\fboxrule}\fcolorbox[rgb]{1.00,0.00,0.00}{1,1,1}{\strut ##1}}}}
+\@namedef{PY@tok@kc}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kd}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kn}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kr}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@bp}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@fm}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@vc}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vg}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vi}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vm}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@sa}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sb}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sc}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@dl}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@s2}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sh}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@s1}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@mb}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mf}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mh}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mi}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@il}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mo}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@ch}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cm}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cpf}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@c1}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cs}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+
+\def\PYZbs{\char`\\}
+\def\PYZus{\char`\_}
+\def\PYZob{\char`\{}
+\def\PYZcb{\char`\}}
+\def\PYZca{\char`\^}
+\def\PYZam{\char`\&}
+\def\PYZlt{\char`\<}
+\def\PYZgt{\char`\>}
+\def\PYZsh{\char`\#}
+\def\PYZpc{\char`\%}
+\def\PYZdl{\char`\$}
+\def\PYZhy{\char`\-}
+\def\PYZsq{\char`\'}
+\def\PYZdq{\char`\"}
+\def\PYZti{\char`\~}
+% for compatibility with earlier versions
+\def\PYZat{@}
+\def\PYZlb{[}
+\def\PYZrb{]}
+\makeatother
+
+
+    % For linebreaks inside Verbatim environment from package fancyvrb.
+    \makeatletter
+        \newbox\Wrappedcontinuationbox
+        \newbox\Wrappedvisiblespacebox
+        \newcommand*\Wrappedvisiblespace {\textcolor{red}{\textvisiblespace}}
+        \newcommand*\Wrappedcontinuationsymbol {\textcolor{red}{\llap{\tiny$\m@th\hookrightarrow$}}}
+        \newcommand*\Wrappedcontinuationindent {3ex }
+        \newcommand*\Wrappedafterbreak {\kern\Wrappedcontinuationindent\copy\Wrappedcontinuationbox}
+        % Take advantage of the already applied Pygments mark-up to insert
+        % potential linebreaks for TeX processing.
+        %        {, <, #, %, $, ' and ": go to next line.
+        %        _, }, ^, &, >, - and ~: stay at end of broken line.
+        % Use of \textquotesingle for straight quote.
+        \newcommand*\Wrappedbreaksatspecials {%
+            \def\PYGZus{\discretionary{\char`\_}{\Wrappedafterbreak}{\char`\_}}%
+            \def\PYGZob{\discretionary{}{\Wrappedafterbreak\char`\{}{\char`\{}}%
+            \def\PYGZcb{\discretionary{\char`\}}{\Wrappedafterbreak}{\char`\}}}%
+            \def\PYGZca{\discretionary{\char`\^}{\Wrappedafterbreak}{\char`\^}}%
+            \def\PYGZam{\discretionary{\char`\&}{\Wrappedafterbreak}{\char`\&}}%
+            \def\PYGZlt{\discretionary{}{\Wrappedafterbreak\char`\<}{\char`\<}}%
+            \def\PYGZgt{\discretionary{\char`\>}{\Wrappedafterbreak}{\char`\>}}%
+            \def\PYGZsh{\discretionary{}{\Wrappedafterbreak\char`\#}{\char`\#}}%
+            \def\PYGZpc{\discretionary{}{\Wrappedafterbreak\char`\%}{\char`\%}}%
+            \def\PYGZdl{\discretionary{}{\Wrappedafterbreak\char`\$}{\char`\$}}%
+            \def\PYGZhy{\discretionary{\char`\-}{\Wrappedafterbreak}{\char`\-}}%
+            \def\PYGZsq{\discretionary{}{\Wrappedafterbreak\textquotesingle}{\textquotesingle}}%
+            \def\PYGZdq{\discretionary{}{\Wrappedafterbreak\char`\"}{\char`\"}}%
+            \def\PYGZti{\discretionary{\char`\~}{\Wrappedafterbreak}{\char`\~}}%
+        }
+        % Some characters . , ; ? ! / are not pygmentized.
+        % This macro makes them "active" and they will insert potential linebreaks
+        \newcommand*\Wrappedbreaksatpunct {%
+            \lccode`\~`\.\lowercase{\def~}{\discretionary{\hbox{\char`\.}}{\Wrappedafterbreak}{\hbox{\char`\.}}}%
+            \lccode`\~`\,\lowercase{\def~}{\discretionary{\hbox{\char`\,}}{\Wrappedafterbreak}{\hbox{\char`\,}}}%
+            \lccode`\~`\;\lowercase{\def~}{\discretionary{\hbox{\char`\;}}{\Wrappedafterbreak}{\hbox{\char`\;}}}%
+            \lccode`\~`\:\lowercase{\def~}{\discretionary{\hbox{\char`\:}}{\Wrappedafterbreak}{\hbox{\char`\:}}}%
+            \lccode`\~`\?\lowercase{\def~}{\discretionary{\hbox{\char`\?}}{\Wrappedafterbreak}{\hbox{\char`\?}}}%
+            \lccode`\~`\!\lowercase{\def~}{\discretionary{\hbox{\char`\!}}{\Wrappedafterbreak}{\hbox{\char`\!}}}%
+            \lccode`\~`\/\lowercase{\def~}{\discretionary{\hbox{\char`\/}}{\Wrappedafterbreak}{\hbox{\char`\/}}}%
+            \catcode`\.\active
+            \catcode`\,\active
+            \catcode`\;\active
+            \catcode`\:\active
+            \catcode`\?\active
+            \catcode`\!\active
+            \catcode`\/\active
+            \lccode`\~`\~
+        }
+    \makeatother
+
+    \let\OriginalVerbatim=\Verbatim
+    \makeatletter
+    \renewcommand{\Verbatim}[1][1]{%
+        %\parskip\z@skip
+        \sbox\Wrappedcontinuationbox {\Wrappedcontinuationsymbol}%
+        \sbox\Wrappedvisiblespacebox {\FV@SetupFont\Wrappedvisiblespace}%
+        \def\FancyVerbFormatLine ##1{\hsize\linewidth
+            \vtop{\raggedright\hyphenpenalty\z@\exhyphenpenalty\z@
+                \doublehyphendemerits\z@\finalhyphendemerits\z@
+                \strut ##1\strut}%
+        }%
+        % If the linebreak is at a space, the latter will be displayed as visible
+        % space at end of first line, and a continuation symbol starts next line.
+        % Stretch/shrink are however usually zero for typewriter font.
+        \def\FV@Space {%
+            \nobreak\hskip\z@ plus\fontdimen3\font minus\fontdimen4\font
+            \discretionary{\copy\Wrappedvisiblespacebox}{\Wrappedafterbreak}
+            {\kern\fontdimen2\font}%
+        }%
+
+        % Allow breaks at special characters using \PYG... macros.
+        \Wrappedbreaksatspecials
+        % Breaks at punctuation characters . , ; ? ! and / need catcode=\active
+        \OriginalVerbatim[#1,codes*=\Wrappedbreaksatpunct]%
+    }
+    \makeatother
+
+    % Exact colors from NB
+    \definecolor{incolor}{HTML}{303F9F}
+    \definecolor{outcolor}{HTML}{D84315}
+    \definecolor{cellborder}{HTML}{CFCFCF}
+    \definecolor{cellbackground}{HTML}{F7F7F7}
+
+    % prompt
+    \makeatletter
+    \newcommand{\boxspacing}{\kern\kvtcb@left@rule\kern\kvtcb@boxsep}
+    \makeatother
+    \newcommand{\prompt}[4]{
+        {\ttfamily\llap{{\color{#2}[#3]:\hspace{3pt}#4}}\vspace{-\baselineskip}}
+    }
+    
+
+    
+    % Prevent overflowing lines due to hard-to-break entities
+    \sloppy
+    % Setup hyperref package
+    \hypersetup{
+      breaklinks=true,  % so long urls are correctly broken across lines
+      colorlinks=true,
+      urlcolor=urlcolor,
+      linkcolor=linkcolor,
+      citecolor=citecolor,
+      }
+    % Slightly bigger margins than the latex defaults
+    
+    \geometry{verbose,tmargin=1in,bmargin=1in,lmargin=1in,rmargin=1in}
+    
+    
+
+\begin{document}
+    
+    \maketitle
+    
+    
+
+    
+    \hypertarget{assignment}{%
+\section{Assignment}\label{assignment}}
+
+\hypertarget{part-1---simple}{%
+\subsection{Part 1 - Simple}\label{part-1---simple}}
+
+Write a function that takes as input the following:
+
+\begin{itemize}
+\tightlist
+\item
+  another function (note that in Python you can pass functions as
+  arguments to other functions)
+\item
+  starting point
+\item
+  temperature
+\item
+  learning/decay rate
+\end{itemize}
+
+and then proceeds to apply Simulated Annealing to minimize the function.
+This is more or less the same as what has been given above, but you need
+to encapsulate it all into a simple function and demonstrate how it
+works on arbitrary functions.
+
+    \hypertarget{annelaing}{%
+\subsubsection{Annelaing}\label{annelaing}}
+
+Annealing refers to a process of gradually cooling and solidifying a
+material to achieve a desired physical or chemical state. But in the
+context of optimization, annealing refers to a technique used to find
+the best solution to a problem by gradually decreasing the search space.\\
+\texttt{Annelaing} mainly involves following 6 steps: -
+\begin{itemize}
+    \item 
+\texttt{Initialization} : Select a staring point(starting solution).
+    \item
+\texttt{Perturbation} : Make a small change in current solution. 
+    \item
+\texttt{Evaluation} : Calculate cost for the new solution 
+    \item
+\texttt{Acceptance} : If the current solution gives better result we
+accept it. 
+    \item
+ \texttt{Cooling} : Decrease the Temperature Parameter. 
+    \item
+\texttt{Termination} : The process can't go infinitely long so we need
+to terminate after a particular number of steps.
+\end{itemize}
+
+    By gradually reducing the temperature parameter, annealing allows the
+optimization algorithm to explore a wider range of the search space in
+the early stages, but then focuses on the most promising solutions as
+the search space is narrowed down.
+\pagebreak
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{import} \PY{n+nn}{numpy} \PY{k}{as} \PY{n+nn}{np}
+\PY{k+kn}{import} \PY{n+nn}{matplotlib}\PY{n+nn}{.}\PY{n+nn}{pyplot} \PY{k}{as} \PY{n+nn}{plt}
+\PY{k+kn}{from} \PY{n+nn}{matplotlib}\PY{n+nn}{.}\PY{n+nn}{animation} \PY{k+kn}{import} \PY{n}{FuncAnimation}
+
+\PY{k}{def} \PY{n+nf}{yfunc}\PY{p}{(}\PY{n}{x}\PY{p}{)}\PY{p}{:}
+    \PY{k}{return} \PY{n}{x}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2} \PY{o}{+} \PY{n}{np}\PY{o}{.}\PY{n}{sin}\PY{p}{(}\PY{l+m+mi}{8}\PY{o}{*}\PY{n}{x}\PY{p}{)}
+
+\PY{k}{def} \PY{n+nf}{simulated\PYZus{}anealling}\PY{p}{(}\PY{n}{yfunc}\PY{p}{,}\PY{n}{start}\PY{p}{,}\PY{n}{temperature}\PY{p}{,}\PY{n}{decay\PYZus{}rate}\PY{p}{)}\PY{p}{:}
+    \PY{c+c1}{\PYZsh{} Set up some large value for the best cost found so far}
+    \PY{n}{bestcost} \PY{o}{=} \PY{l+m+mi}{100000}
+    \PY{c+c1}{\PYZsh{} Generate several values within a search \PYZsq{}space\PYZsq{} and check whether the new value is better}
+    \PY{c+c1}{\PYZsh{} than the best seen so far.}
+    \PY{n}{bestx} \PY{o}{=} \PY{n}{start}
+    \PY{n}{rangemin}\PY{p}{,} \PY{n}{rangemax} \PY{o}{=} \PY{o}{\PYZhy{}}\PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{2} 
+    \PY{n}{xbase}\PY{o}{=}\PY{n}{np}\PY{o}{.}\PY{n}{linspace}\PY{p}{(}\PY{n}{rangemin}\PY{p}{,}\PY{n}{rangemax}\PY{p}{,}\PY{l+m+mi}{1000}\PY{p}{)}
+    \PY{n}{ybase}\PY{o}{=}\PY{n}{yfunc}\PY{p}{(}\PY{n}{xbase}\PY{p}{)}
+    \PY{n}{fig}\PY{p}{,} \PY{n}{ax} \PY{o}{=} \PY{n}{plt}\PY{o}{.}\PY{n}{subplots}\PY{p}{(}\PY{p}{)}
+    \PY{n}{ax}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{xbase}\PY{p}{,} \PY{n}{ybase}\PY{p}{)}
+    \PY{n}{xall}\PY{p}{,} \PY{n}{yall} \PY{o}{=} \PY{p}{[}\PY{p}{]}\PY{p}{,} \PY{p}{[}\PY{p}{]}
+    \PY{n}{lnall}\PY{p}{,}  \PY{o}{=} \PY{n}{ax}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{p}{[}\PY{p}{]}\PY{p}{,} \PY{p}{[}\PY{p}{]}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{ro}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+    \PY{n}{lngood}\PY{p}{,} \PY{o}{=} \PY{n}{ax}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{p}{[}\PY{p}{]}\PY{p}{,} \PY{p}{[}\PY{p}{]}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{go}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{markersize}\PY{o}{=}\PY{l+m+mi}{10}\PY{p}{)}
+    \PY{k}{def} \PY{n+nf}{onestep}\PY{p}{(}\PY{n}{frame}\PY{p}{)}\PY{p}{:}
+        \PY{k}{nonlocal} \PY{n}{bestcost}\PY{p}{,} \PY{n}{bestx}\PY{p}{,} \PY{n}{decay\PYZus{}rate}\PY{p}{,} \PY{n}{temperature}
+        \PY{c+c1}{\PYZsh{} Generate a random value \PYZbs{}in \PYZhy{}2, +2}
+        \PY{n}{dx} \PY{o}{=} \PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{random}\PY{o}{.}\PY{n}{random\PYZus{}sample}\PY{p}{(}\PY{p}{)} \PY{o}{\PYZhy{}} \PY{l+m+mf}{0.5}\PY{p}{)} \PY{o}{*} \PY{n}{temperature}
+        \PY{n}{x} \PY{o}{=} \PY{n}{bestx} \PY{o}{+} \PY{n}{dx}
+        \PY{c+c1}{\PYZsh{} print(f\PYZdq{}Old x = \PYZob{}x\PYZcb{}, delta = \PYZob{}dx\PYZcb{}\PYZdq{})}
+        \PY{n}{y} \PY{o}{=} \PY{n}{yfunc}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+        \PY{k}{if} \PY{n}{y} \PY{o}{\PYZlt{}} \PY{n}{bestcost}\PY{p}{:}
+            \PY{c+c1}{\PYZsh{} print(f\PYZdq{}Improved from \PYZob{}bestcost\PYZcb{} at \PYZob{}bestx\PYZcb{} to \PYZob{}y\PYZcb{} at \PYZob{}x\PYZcb{}\PYZdq{})}
+            \PY{n}{bestcost} \PY{o}{=} \PY{n}{y}
+            \PY{n}{bestx} \PY{o}{=} \PY{n}{x}
+            \PY{n}{lngood}\PY{o}{.}\PY{n}{set\PYZus{}data}\PY{p}{(}\PY{n}{x}\PY{p}{,} \PY{n}{y}\PY{p}{)}
+        \PY{k}{else}\PY{p}{:}
+            \PY{n}{toss} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{random}\PY{o}{.}\PY{n}{random\PYZus{}sample}\PY{p}{(}\PY{p}{)}
+            \PY{k}{if} \PY{n}{toss} \PY{o}{\PYZlt{}} \PY{n}{np}\PY{o}{.}\PY{n}{exp}\PY{p}{(}\PY{o}{\PYZhy{}}\PY{p}{(}\PY{n}{y}\PY{o}{\PYZhy{}}\PY{n}{bestcost}\PY{p}{)}\PY{o}{/}\PY{n}{temperature}\PY{p}{)}\PY{p}{:}
+                \PY{n}{bestcost} \PY{o}{=} \PY{n}{y}
+                \PY{n}{bestx} \PY{o}{=} \PY{n}{x}
+                \PY{n}{lngood}\PY{o}{.}\PY{n}{set\PYZus{}data}\PY{p}{(}\PY{n}{x}\PY{p}{,} \PY{n}{y}\PY{p}{)}
+            \PY{c+c1}{\PYZsh{} print(f\PYZdq{}New cost \PYZob{}y\PYZcb{} worse than best so far: \PYZob{}bestcost\PYZcb{}\PYZdq{})}
+            \PY{k}{pass}
+        \PY{n}{temperature} \PY{o}{=} \PY{n}{temperature} \PY{o}{*} \PY{n}{decay\PYZus{}rate}
+        \PY{n}{xall}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+        \PY{n}{yall}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n}{y}\PY{p}{)}
+        \PY{n}{lnall}\PY{o}{.}\PY{n}{set\PYZus{}data}\PY{p}{(}\PY{n}{xall}\PY{p}{,} \PY{n}{yall}\PY{p}{)}
+        \PY{c+c1}{\PYZsh{} return lngood,}
+    \PY{n}{ani}\PY{o}{=} \PY{n}{FuncAnimation}\PY{p}{(}\PY{n}{fig}\PY{p}{,} \PY{n}{onestep}\PY{p}{,} \PY{n}{frames}\PY{o}{=}\PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{100}\PY{p}{)}\PY{p}{,} \PY{n}{interval}\PY{o}{=}\PY{l+m+mi}{100}\PY{p}{,} \PY{n}{repeat}\PY{o}{=}\PY{k+kc}{False}\PY{p}{)}
+    \PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+
+\PY{n}{simulated\PYZus{}anealling}\PY{p}{(}\PY{n}{yfunc}\PY{p}{,}\PY{o}{\PYZhy{}}\PY{l+m+mi}{2}\PY{p}{,}\PY{l+m+mi}{3}\PY{p}{,}\PY{l+m+mf}{0.95}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    The problem statement only said to take a function, starting point,
+temperature, cooling or decay rate. But to plot we need max and min
+range values. For the function used above I took the domain as
+{[}-2,2{]}. While evaluating for other functions the user has to change
+those value explicitely.
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{p1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    \pagebreak
+    
+    \hypertarget{part-2}{%
+\subsection{Part 2}\label{part-2}}
+
+The traveling salesman problem gives you a set of city locations (x, y
+coordinates). Your goal is to find a route from a given starting point
+that visits all the cities exactly once and then returns to the origin,
+with the minimum total distance covered (distance is measured as
+Euclidean distance \(\sqrt{(x_2-x_1)^2 + (y_2-y_1)^2}\)).
+
+You will be given a file where the first line is the number of cities
+\emph{N}, and the next \emph{N} lines give the cities as a list of x, y
+coordinates: for example
+
+\begin{verbatim}
+4
+0.0 1.5
+2.3 6.1
+4.2 1.3
+2.1 4.5
+\end{verbatim}
+
+Your goal is to give a sequence of numbers, for example
+\texttt{{[}0\ 3\ 2\ 1{]}} which specifies the order in which to visit
+the cities. Note that after the last city you will come back to the
+first one in the list.
+
+Plot the cities with the path you have specified, and output the total
+length of the shortest path discovered so far.
+
+    \hypertarget{part-2a}{%
+\subsubsection{Part 2a}\label{part-2a}}
+
+Get the minimized distance path for the file ``tsp\_10.txt''
+
+    Note that the difference in annealing in this problem is that we have a
+list of order as solution (in problem 1 we had just one value) So here,
+in the perturbation step I changed the current order by choosing a
+subarray of the given order and reversing it. Just randomly generating a
+new order won't work here because in perturbation step we have to change
+the current solution by a little.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{import} \PY{n+nn}{numpy} \PY{k}{as} \PY{n+nn}{np}
+\PY{k+kn}{import} \PY{n+nn}{matplotlib}\PY{n+nn}{.}\PY{n+nn}{pyplot} \PY{k}{as} \PY{n+nn}{plt}
+\PY{k+kn}{from} \PY{n+nn}{matplotlib}\PY{n+nn}{.}\PY{n+nn}{animation} \PY{k+kn}{import} \PY{n}{FuncAnimation}
+\PY{k+kn}{import} \PY{n+nn}{random}
+
+\PY{c+c1}{\PYZsh{}File Reading }
+\PY{k}{def} \PY{n+nf}{read\PYZus{}file}\PY{p}{(}\PY{n}{filename}\PY{p}{)}\PY{p}{:}
+    \PY{n}{x\PYZus{}cities}\PY{o}{=}\PY{p}{[}\PY{p}{]}
+    \PY{n}{y\PYZus{}cities}\PY{o}{=}\PY{p}{[}\PY{p}{]}
+    \PY{k}{with} \PY{n+nb}{open}\PY{p}{(}\PY{n}{filename}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{r}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)} \PY{k}{as} \PY{n}{f}\PY{p}{:}
+        \PY{n}{data}\PY{o}{=}\PY{n}{f}\PY{o}{.}\PY{n}{readlines}\PY{p}{(}\PY{p}{)}
+        \PY{n}{total\PYZus{}cities}\PY{o}{=}\PY{n+nb}{int}\PY{p}{(}\PY{n}{data}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{)}
+        \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,}\PY{n+nb}{len}\PY{p}{(}\PY{n}{data}\PY{p}{)}\PY{p}{)}\PY{p}{:}
+            \PY{n}{x}\PY{p}{,}\PY{n}{y}\PY{o}{=}\PY{n}{data}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{o}{.}\PY{n}{split}\PY{p}{(}\PY{p}{)}
+            \PY{n}{x\PYZus{}cities}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n+nb}{float}\PY{p}{(}\PY{n}{x}\PY{p}{)}\PY{p}{)}
+            \PY{n}{y\PYZus{}cities}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n+nb}{float}\PY{p}{(}\PY{n}{y}\PY{p}{)}\PY{p}{)}
+    \PY{n}{x\PYZus{}cities}\PY{o}{=}\PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{n}{x\PYZus{}cities}\PY{p}{)}
+    \PY{n}{y\PYZus{}cities}\PY{o}{=}\PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{n}{y\PYZus{}cities}\PY{p}{)}
+    \PY{k}{return} \PY{n}{x\PYZus{}cities}\PY{p}{,}\PY{n}{y\PYZus{}cities}\PY{p}{,}\PY{n}{total\PYZus{}cities}
+
+\PY{c+c1}{\PYZsh{}Function to give distance between 2 points}
+\PY{k}{def} \PY{n+nf}{dist}\PY{p}{(}\PY{n}{x1}\PY{p}{,}\PY{n}{y1}\PY{p}{,}\PY{n}{x2}\PY{p}{,}\PY{n}{y2}\PY{p}{)}\PY{p}{:}
+    \PY{k}{return} \PY{n}{np}\PY{o}{.}\PY{n}{sqrt}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{square}\PY{p}{(}\PY{n}{x2}\PY{o}{\PYZhy{}}\PY{n}{x1}\PY{p}{)}\PY{o}{+}\PY{n}{np}\PY{o}{.}\PY{n}{square}\PY{p}{(}\PY{n}{y2}\PY{o}{\PYZhy{}}\PY{n}{y1}\PY{p}{)}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{}Function to calculate total distance traversed by the given path}
+\PY{k}{def} \PY{n+nf}{calculate\PYZus{}cost}\PY{p}{(}\PY{n}{x\PYZus{}cities}\PY{p}{,}\PY{n}{y\PYZus{}cities}\PY{p}{,}\PY{n}{total\PYZus{}cities}\PY{p}{,}\PY{n}{order}\PY{p}{)}\PY{p}{:}
+    \PY{n}{distance}\PY{o}{=}\PY{l+m+mi}{0}
+    \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n}{total\PYZus{}cities}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{)}\PY{p}{:}
+        \PY{n}{distance}\PY{o}{+}\PY{o}{=}\PY{n}{dist}\PY{p}{(}\PY{n}{x\PYZus{}cities}\PY{p}{[}\PY{n}{order}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{p}{]}\PY{p}{,}\PY{n}{y\PYZus{}cities}\PY{p}{[}\PY{n}{order}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{p}{]}\PY{p}{,}\PY{n}{x\PYZus{}cities}\PY{p}{[}\PY{n}{order}\PY{p}{[}\PY{n}{i}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{]}\PY{p}{,}\PY{n}{y\PYZus{}cities}\PY{p}{[}\PY{n}{order}\PY{p}{[}\PY{n}{i}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{]}\PY{p}{)}
+    \PY{n}{distance}\PY{o}{+}\PY{o}{=}\PY{n}{dist}\PY{p}{(}\PY{n}{x\PYZus{}cities}\PY{p}{[}\PY{n}{order}\PY{p}{[}\PY{n}{total\PYZus{}cities}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{]}\PY{p}{,}\PY{n}{y\PYZus{}cities}\PY{p}{[}\PY{n}{order}\PY{p}{[}\PY{n}{total\PYZus{}cities}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{]}\PY{p}{,}\PY{n}{x\PYZus{}cities}\PY{p}{[}\PY{n}{order}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{]}\PY{p}{,}\PY{n}{y\PYZus{}cities}\PY{p}{[}\PY{n}{order}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{]}\PY{p}{)}
+    \PY{k}{return} \PY{n}{distance}
+
+\PY{k}{def} \PY{n+nf}{travelling\PYZus{}salesman}\PY{p}{(}\PY{n}{filename}\PY{p}{)}\PY{p}{:}
+    \PY{n}{x\PYZus{}cities}\PY{p}{,}\PY{n}{y\PYZus{}cities}\PY{p}{,}\PY{n}{total\PYZus{}cities}\PY{o}{=}\PY{n}{read\PYZus{}file}\PY{p}{(}\PY{n}{filename}\PY{p}{)}
+    \PY{c+c1}{\PYZsh{}labels to name all the points on the graph}
+    \PY{n}{labels}\PY{o}{=}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{P}\PY{l+s+s1}{\PYZsq{}}\PY{o}{+}\PY{n+nb}{str}\PY{p}{(}\PY{n}{i}\PY{p}{)} \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n}{total\PYZus{}cities}\PY{p}{)}\PY{p}{]}
+    \PY{c+c1}{\PYZsh{} Initial temperature and decay rate}
+    \PY{n}{T} \PY{o}{=} \PY{l+m+mf}{100.0}
+    \PY{n}{decayrate} \PY{o}{=} \PY{l+m+mf}{0.99}
+    \PY{c+c1}{\PYZsh{} Set up some large value for the best cost found so far}
+    \PY{n}{bestcost} \PY{o}{=} \PY{l+m+mi}{10000000}
+    \PY{c+c1}{\PYZsh{}Number of iteraions}
+    \PY{n}{epoches}\PY{o}{=}\PY{l+m+mi}{10000} 
+    \PY{c+c1}{\PYZsh{}\PYZlt{}Initialization\PYZgt{}}
+    \PY{n}{order}\PY{o}{=}\PY{p}{[}\PY{n}{i} \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n}{total\PYZus{}cities}\PY{p}{)}\PY{p}{]}
+    \PY{n}{random}\PY{o}{.}\PY{n}{shuffle}\PY{p}{(}\PY{n}{order}\PY{p}{)}
+    \PY{k}{for} \PY{n}{epoch} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n}{epoches}\PY{p}{)}\PY{p}{:}
+        \PY{c+c1}{\PYZsh{} to get new order}
+        \PY{n}{num\PYZus{}1}\PY{o}{=}\PY{n}{random}\PY{o}{.}\PY{n}{randint}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,}\PY{n}{total\PYZus{}cities}\PY{p}{)}
+        \PY{n}{num\PYZus{}2}\PY{o}{=}\PY{n}{random}\PY{o}{.}\PY{n}{randint}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,}\PY{n}{total\PYZus{}cities}\PY{p}{)}
+        \PY{k}{while}\PY{p}{(}\PY{n}{num\PYZus{}1}\PY{o}{==}\PY{n}{num\PYZus{}2}\PY{p}{)}\PY{p}{:}
+            \PY{n}{num\PYZus{}1}\PY{o}{=}\PY{n}{random}\PY{o}{.}\PY{n}{randint}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,}\PY{n}{total\PYZus{}cities}\PY{p}{)}
+            \PY{n}{num\PYZus{}2}\PY{o}{=}\PY{n}{random}\PY{o}{.}\PY{n}{randint}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,}\PY{n}{total\PYZus{}cities}\PY{p}{)}
+        \PY{n}{num1}\PY{p}{,}\PY{n}{num2}\PY{o}{=}\PY{n+nb}{min}\PY{p}{(}\PY{n}{num\PYZus{}1}\PY{p}{,}\PY{n}{num\PYZus{}2}\PY{p}{)}\PY{p}{,}\PY{n+nb}{max}\PY{p}{(}\PY{n}{num\PYZus{}1}\PY{p}{,}\PY{n}{num\PYZus{}2}\PY{p}{)}
+        \PY{c+c1}{\PYZsh{}\PYZlt{}Perturbation\PYZgt{}}
+        \PY{n}{order}\PY{o}{=}\PY{n}{order}\PY{p}{[}\PY{p}{:}\PY{n}{num1}\PY{p}{]}\PY{o}{+}\PY{n}{order}\PY{p}{[}\PY{n}{num1}\PY{p}{:}\PY{n}{num2}\PY{p}{]}\PY{p}{[}\PY{p}{:}\PY{p}{:}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{]}\PY{o}{+}\PY{n}{order}\PY{p}{[}\PY{n}{num2}\PY{p}{:}\PY{p}{]}
+        \PY{c+c1}{\PYZsh{}calculate cost from the calculated order}
+        \PY{n}{cost}\PY{o}{=}\PY{n}{calculate\PYZus{}cost}\PY{p}{(}\PY{n}{x\PYZus{}cities}\PY{p}{,}\PY{n}{y\PYZus{}cities}\PY{p}{,}\PY{n}{total\PYZus{}cities}\PY{p}{,}\PY{n}{order}\PY{p}{)}
+        \PY{c+c1}{\PYZsh{}\PYZlt{}Evaluation\PYZgt{}}
+        \PY{k}{if} \PY{n}{cost} \PY{o}{\PYZlt{}} \PY{n}{bestcost}\PY{p}{:}
+            \PY{c+c1}{\PYZsh{}\PYZlt{}Acceptance\PYZgt{}}
+            \PY{n}{bestcost} \PY{o}{=} \PY{n}{cost}
+            \PY{n}{final\PYZus{}order} \PY{o}{=} \PY{n}{order}
+        \PY{k}{else}\PY{p}{:}
+            \PY{n}{toss} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{random}\PY{o}{.}\PY{n}{random\PYZus{}sample}\PY{p}{(}\PY{p}{)}
+            \PY{k}{if} \PY{n}{toss} \PY{o}{\PYZlt{}} \PY{n}{np}\PY{o}{.}\PY{n}{exp}\PY{p}{(}\PY{o}{\PYZhy{}}\PY{p}{(}\PY{n}{cost}\PY{o}{\PYZhy{}}\PY{n}{bestcost}\PY{p}{)}\PY{o}{/}\PY{n}{T}\PY{p}{)}\PY{p}{:}
+                \PY{n}{bestcost} \PY{o}{=} \PY{n}{cost}
+                \PY{n}{final\PYZus{}order} \PY{o}{=} \PY{n}{order}
+            \PY{k}{else}\PY{p}{:}
+               \PY{c+c1}{\PYZsh{} get the original order}
+               \PY{n}{order}\PY{o}{=}\PY{n}{order}\PY{p}{[}\PY{p}{:}\PY{n}{num1}\PY{p}{]}\PY{o}{+}\PY{n}{order}\PY{p}{[}\PY{n}{num1}\PY{p}{:}\PY{n}{num2}\PY{p}{]}\PY{p}{[}\PY{p}{:}\PY{p}{:}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{]}\PY{o}{+}\PY{n}{order}\PY{p}{[}\PY{n}{num2}\PY{p}{:}\PY{p}{]} 
+        \PY{c+c1}{\PYZsh{}\PYZlt{}Cooling\PYZgt{}}
+        \PY{n}{T} \PY{o}{=} \PY{n}{T} \PY{o}{*} \PY{n}{decayrate}
+    \PY{c+c1}{\PYZsh{}\PYZlt{}Termination\PYZgt{} of annealing}
+    \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{The minimum distance is }\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}\PY{n}{bestcost}\PY{p}{)}
+    \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Order :}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}\PY{n}{final\PYZus{}order}\PY{p}{)}
+    \PY{n}{xplot} \PY{o}{=} \PY{n}{x\PYZus{}cities}\PY{p}{[}\PY{n}{final\PYZus{}order}\PY{p}{]} 
+    \PY{n}{yplot} \PY{o}{=} \PY{n}{y\PYZus{}cities}\PY{p}{[}\PY{n}{final\PYZus{}order}\PY{p}{]}
+    \PY{n}{xplot} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n}{xplot}\PY{p}{,} \PY{n}{xplot}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{)}
+    \PY{n}{yplot} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n}{yplot}\PY{p}{,} \PY{n}{yplot}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{)}
+    \PY{n}{plt}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{xplot}\PY{p}{,} \PY{n}{yplot}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{o\PYZhy{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+    \PY{k}{for} \PY{n}{point} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n}{total\PYZus{}cities}\PY{p}{)}\PY{p}{:}
+        \PY{n}{plt}\PY{o}{.}\PY{n}{annotate}\PY{p}{(}\PY{n}{labels}\PY{p}{[}\PY{n}{point}\PY{p}{]}\PY{p}{,}\PY{n}{xy}\PY{o}{=}\PY{p}{(}\PY{n}{x\PYZus{}cities}\PY{p}{[}\PY{n}{point}\PY{p}{]}\PY{p}{,}\PY{n}{y\PYZus{}cities}\PY{p}{[}\PY{n}{point}\PY{p}{]}\PY{p}{)}\PY{p}{)}
+    \PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+
+\PY{n}{travelling\PYZus{}salesman}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{tsp\PYZus{}10.txt}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{p2a.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    \pagebreak
+    
+    \hypertarget{part-2b}{%
+\subsubsection{Part 2b}\label{part-2b}}
+
+Get the minimized distance path for the file ``tsp\_100.txt''.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{import} \PY{n+nn}{numpy} \PY{k}{as} \PY{n+nn}{np}
+\PY{k+kn}{import} \PY{n+nn}{matplotlib}\PY{n+nn}{.}\PY{n+nn}{pyplot} \PY{k}{as} \PY{n+nn}{plt}
+\PY{k+kn}{from} \PY{n+nn}{matplotlib}\PY{n+nn}{.}\PY{n+nn}{animation} \PY{k+kn}{import} \PY{n}{FuncAnimation}
+\PY{k+kn}{import} \PY{n+nn}{random}
+
+\PY{c+c1}{\PYZsh{}File Reading }
+\PY{k}{def} \PY{n+nf}{read\PYZus{}file}\PY{p}{(}\PY{n}{filename}\PY{p}{)}\PY{p}{:}
+    \PY{n}{x\PYZus{}cities}\PY{o}{=}\PY{p}{[}\PY{p}{]}
+    \PY{n}{y\PYZus{}cities}\PY{o}{=}\PY{p}{[}\PY{p}{]}
+    \PY{k}{with} \PY{n+nb}{open}\PY{p}{(}\PY{n}{filename}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{r}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)} \PY{k}{as} \PY{n}{f}\PY{p}{:}
+        \PY{n}{data}\PY{o}{=}\PY{n}{f}\PY{o}{.}\PY{n}{readlines}\PY{p}{(}\PY{p}{)}
+        \PY{n}{total\PYZus{}cities}\PY{o}{=}\PY{n+nb}{int}\PY{p}{(}\PY{n}{data}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{)}
+        \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,}\PY{n+nb}{len}\PY{p}{(}\PY{n}{data}\PY{p}{)}\PY{p}{)}\PY{p}{:}
+            \PY{n}{x}\PY{p}{,}\PY{n}{y}\PY{o}{=}\PY{n}{data}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{o}{.}\PY{n}{split}\PY{p}{(}\PY{p}{)}
+            \PY{n}{x\PYZus{}cities}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n+nb}{float}\PY{p}{(}\PY{n}{x}\PY{p}{)}\PY{p}{)}
+            \PY{n}{y\PYZus{}cities}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n+nb}{float}\PY{p}{(}\PY{n}{y}\PY{p}{)}\PY{p}{)}
+    \PY{n}{x\PYZus{}cities}\PY{o}{=}\PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{n}{x\PYZus{}cities}\PY{p}{)}
+    \PY{n}{y\PYZus{}cities}\PY{o}{=}\PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{n}{y\PYZus{}cities}\PY{p}{)}
+    \PY{k}{return} \PY{n}{x\PYZus{}cities}\PY{p}{,}\PY{n}{y\PYZus{}cities}\PY{p}{,}\PY{n}{total\PYZus{}cities}
+
+\PY{c+c1}{\PYZsh{}Function to give distance between 2 points}
+\PY{k}{def} \PY{n+nf}{dist}\PY{p}{(}\PY{n}{x1}\PY{p}{,}\PY{n}{y1}\PY{p}{,}\PY{n}{x2}\PY{p}{,}\PY{n}{y2}\PY{p}{)}\PY{p}{:}
+    \PY{k}{return} \PY{n}{np}\PY{o}{.}\PY{n}{sqrt}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{square}\PY{p}{(}\PY{n}{x2}\PY{o}{\PYZhy{}}\PY{n}{x1}\PY{p}{)}\PY{o}{+}\PY{n}{np}\PY{o}{.}\PY{n}{square}\PY{p}{(}\PY{n}{y2}\PY{o}{\PYZhy{}}\PY{n}{y1}\PY{p}{)}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{}Function to calculate total distance traversed by the given path}
+\PY{k}{def} \PY{n+nf}{calculate\PYZus{}cost}\PY{p}{(}\PY{n}{x\PYZus{}cities}\PY{p}{,}\PY{n}{y\PYZus{}cities}\PY{p}{,}\PY{n}{total\PYZus{}cities}\PY{p}{,}\PY{n}{order}\PY{p}{)}\PY{p}{:}
+    \PY{n}{distance}\PY{o}{=}\PY{l+m+mi}{0}
+    \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n}{total\PYZus{}cities}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{)}\PY{p}{:}
+        \PY{n}{distance}\PY{o}{+}\PY{o}{=}\PY{n}{dist}\PY{p}{(}\PY{n}{x\PYZus{}cities}\PY{p}{[}\PY{n}{order}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{p}{]}\PY{p}{,}\PY{n}{y\PYZus{}cities}\PY{p}{[}\PY{n}{order}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{p}{]}\PY{p}{,}\PY{n}{x\PYZus{}cities}\PY{p}{[}\PY{n}{order}\PY{p}{[}\PY{n}{i}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{]}\PY{p}{,}\PY{n}{y\PYZus{}cities}\PY{p}{[}\PY{n}{order}\PY{p}{[}\PY{n}{i}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{]}\PY{p}{)}
+    \PY{n}{distance}\PY{o}{+}\PY{o}{=}\PY{n}{dist}\PY{p}{(}\PY{n}{x\PYZus{}cities}\PY{p}{[}\PY{n}{order}\PY{p}{[}\PY{n}{total\PYZus{}cities}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{]}\PY{p}{,}\PY{n}{y\PYZus{}cities}\PY{p}{[}\PY{n}{order}\PY{p}{[}\PY{n}{total\PYZus{}cities}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{]}\PY{p}{,}\PY{n}{x\PYZus{}cities}\PY{p}{[}\PY{n}{order}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{]}\PY{p}{,}\PY{n}{y\PYZus{}cities}\PY{p}{[}\PY{n}{order}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{]}\PY{p}{)}
+    \PY{k}{return} \PY{n}{distance}
+
+\PY{k}{def} \PY{n+nf}{travelling\PYZus{}salesman}\PY{p}{(}\PY{n}{filename}\PY{p}{)}\PY{p}{:}
+    \PY{n}{x\PYZus{}cities}\PY{p}{,}\PY{n}{y\PYZus{}cities}\PY{p}{,}\PY{n}{total\PYZus{}cities}\PY{o}{=}\PY{n}{read\PYZus{}file}\PY{p}{(}\PY{n}{filename}\PY{p}{)}
+    \PY{c+c1}{\PYZsh{}labels to name all the points on the graph}
+    \PY{n}{labels}\PY{o}{=}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{P}\PY{l+s+s1}{\PYZsq{}}\PY{o}{+}\PY{n+nb}{str}\PY{p}{(}\PY{n}{i}\PY{p}{)} \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n}{total\PYZus{}cities}\PY{p}{)}\PY{p}{]}
+    \PY{c+c1}{\PYZsh{} Initial temperature and decay rate}
+    \PY{n}{T} \PY{o}{=} \PY{l+m+mf}{100.0}
+    \PY{n}{decayrate} \PY{o}{=} \PY{l+m+mf}{0.99}
+    \PY{c+c1}{\PYZsh{} Set up some large value for the best cost found so far}
+    \PY{n}{bestcost} \PY{o}{=} \PY{l+m+mi}{10000000}
+    \PY{c+c1}{\PYZsh{}Number of iteraions}
+    \PY{n}{epoches}\PY{o}{=}\PY{l+m+mi}{10000} 
+    \PY{c+c1}{\PYZsh{}\PYZlt{}Initialization\PYZgt{}}
+    \PY{n}{order}\PY{o}{=}\PY{p}{[}\PY{n}{i} \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n}{total\PYZus{}cities}\PY{p}{)}\PY{p}{]}
+    \PY{n}{random}\PY{o}{.}\PY{n}{shuffle}\PY{p}{(}\PY{n}{order}\PY{p}{)}
+    \PY{k}{for} \PY{n}{epoch} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n}{epoches}\PY{p}{)}\PY{p}{:}
+        \PY{c+c1}{\PYZsh{} to get new order}
+        \PY{n}{num\PYZus{}1}\PY{o}{=}\PY{n}{random}\PY{o}{.}\PY{n}{randint}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,}\PY{n}{total\PYZus{}cities}\PY{p}{)}
+        \PY{n}{num\PYZus{}2}\PY{o}{=}\PY{n}{random}\PY{o}{.}\PY{n}{randint}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,}\PY{n}{total\PYZus{}cities}\PY{p}{)}
+        \PY{k}{while}\PY{p}{(}\PY{n}{num\PYZus{}1}\PY{o}{==}\PY{n}{num\PYZus{}2}\PY{p}{)}\PY{p}{:}
+            \PY{n}{num\PYZus{}1}\PY{o}{=}\PY{n}{random}\PY{o}{.}\PY{n}{randint}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,}\PY{n}{total\PYZus{}cities}\PY{p}{)}
+            \PY{n}{num\PYZus{}2}\PY{o}{=}\PY{n}{random}\PY{o}{.}\PY{n}{randint}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,}\PY{n}{total\PYZus{}cities}\PY{p}{)}
+        \PY{n}{num1}\PY{p}{,}\PY{n}{num2}\PY{o}{=}\PY{n+nb}{min}\PY{p}{(}\PY{n}{num\PYZus{}1}\PY{p}{,}\PY{n}{num\PYZus{}2}\PY{p}{)}\PY{p}{,}\PY{n+nb}{max}\PY{p}{(}\PY{n}{num\PYZus{}1}\PY{p}{,}\PY{n}{num\PYZus{}2}\PY{p}{)}
+        \PY{c+c1}{\PYZsh{}\PYZlt{}Perturbation\PYZgt{}}
+        \PY{n}{order}\PY{o}{=}\PY{n}{order}\PY{p}{[}\PY{p}{:}\PY{n}{num1}\PY{p}{]}\PY{o}{+}\PY{n}{order}\PY{p}{[}\PY{n}{num1}\PY{p}{:}\PY{n}{num2}\PY{p}{]}\PY{p}{[}\PY{p}{:}\PY{p}{:}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{]}\PY{o}{+}\PY{n}{order}\PY{p}{[}\PY{n}{num2}\PY{p}{:}\PY{p}{]}
+        \PY{c+c1}{\PYZsh{}calculate cost from the calculated order}
+        \PY{n}{cost}\PY{o}{=}\PY{n}{calculate\PYZus{}cost}\PY{p}{(}\PY{n}{x\PYZus{}cities}\PY{p}{,}\PY{n}{y\PYZus{}cities}\PY{p}{,}\PY{n}{total\PYZus{}cities}\PY{p}{,}\PY{n}{order}\PY{p}{)}
+        \PY{c+c1}{\PYZsh{}\PYZlt{}Evaluation\PYZgt{}}
+        \PY{k}{if} \PY{n}{cost} \PY{o}{\PYZlt{}} \PY{n}{bestcost}\PY{p}{:}
+            \PY{c+c1}{\PYZsh{}\PYZlt{}Acceptance\PYZgt{}}
+            \PY{n}{bestcost} \PY{o}{=} \PY{n}{cost}
+            \PY{n}{final\PYZus{}order} \PY{o}{=} \PY{n}{order}
+        \PY{k}{else}\PY{p}{:}
+            \PY{n}{toss} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{random}\PY{o}{.}\PY{n}{random\PYZus{}sample}\PY{p}{(}\PY{p}{)}
+            \PY{k}{if} \PY{n}{toss} \PY{o}{\PYZlt{}} \PY{n}{np}\PY{o}{.}\PY{n}{exp}\PY{p}{(}\PY{o}{\PYZhy{}}\PY{p}{(}\PY{n}{cost}\PY{o}{\PYZhy{}}\PY{n}{bestcost}\PY{p}{)}\PY{o}{/}\PY{n}{T}\PY{p}{)}\PY{p}{:}
+                \PY{n}{bestcost} \PY{o}{=} \PY{n}{cost}
+                \PY{n}{final\PYZus{}order} \PY{o}{=} \PY{n}{order}
+            \PY{k}{else}\PY{p}{:}
+               \PY{c+c1}{\PYZsh{} get the original order}
+               \PY{n}{order}\PY{o}{=}\PY{n}{order}\PY{p}{[}\PY{p}{:}\PY{n}{num1}\PY{p}{]}\PY{o}{+}\PY{n}{order}\PY{p}{[}\PY{n}{num1}\PY{p}{:}\PY{n}{num2}\PY{p}{]}\PY{p}{[}\PY{p}{:}\PY{p}{:}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{]}\PY{o}{+}\PY{n}{order}\PY{p}{[}\PY{n}{num2}\PY{p}{:}\PY{p}{]} 
+        \PY{c+c1}{\PYZsh{}\PYZlt{}Cooling\PYZgt{}}
+        \PY{n}{T} \PY{o}{=} \PY{n}{T} \PY{o}{*} \PY{n}{decayrate}
+    \PY{c+c1}{\PYZsh{}\PYZlt{}Termination\PYZgt{} of annealing}
+    \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{The minimum distance is }\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}\PY{n}{bestcost}\PY{p}{)}
+    \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Order :}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}\PY{n}{final\PYZus{}order}\PY{p}{)}
+    \PY{n}{xplot} \PY{o}{=} \PY{n}{x\PYZus{}cities}\PY{p}{[}\PY{n}{final\PYZus{}order}\PY{p}{]} 
+    \PY{n}{yplot} \PY{o}{=} \PY{n}{y\PYZus{}cities}\PY{p}{[}\PY{n}{final\PYZus{}order}\PY{p}{]}
+    \PY{n}{xplot} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n}{xplot}\PY{p}{,} \PY{n}{xplot}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{)}
+    \PY{n}{yplot} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n}{yplot}\PY{p}{,} \PY{n}{yplot}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{)}
+    \PY{n}{plt}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{xplot}\PY{p}{,} \PY{n}{yplot}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{o\PYZhy{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+    \PY{k}{for} \PY{n}{point} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n}{total\PYZus{}cities}\PY{p}{)}\PY{p}{:}
+        \PY{n}{plt}\PY{o}{.}\PY{n}{annotate}\PY{p}{(}\PY{n}{labels}\PY{p}{[}\PY{n}{point}\PY{p}{]}\PY{p}{,}\PY{n}{xy}\PY{o}{=}\PY{p}{(}\PY{n}{x\PYZus{}cities}\PY{p}{[}\PY{n}{point}\PY{p}{]}\PY{p}{,}\PY{n}{y\PYZus{}cities}\PY{p}{[}\PY{n}{point}\PY{p}{]}\PY{p}{)}\PY{p}{)}
+    \PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+
+\PY{n}{travelling\PYZus{}salesman}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{tsp\PYZus{}100.txt}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{p2b.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    
+    Note: I have used a jupyter notebook just to make the pdf easily. I am
+not attaching the jupter notebook as it gives some problems while
+plotting and animating. I am attaching 3 individual run-alone pyhton
+files.
+
+
+    % Add a bibliography block to the postdoc
+    
+    
+    
+\end{document}

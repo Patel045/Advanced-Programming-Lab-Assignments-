@@ -1,0 +1,960 @@
+\documentclass[11pt]{article}
+
+    \usepackage[breakable]{tcolorbox}
+    \usepackage{parskip} % Stop auto-indenting (to mimic markdown behaviour)
+    
+
+    % Basic figure setup, for now with no caption control since it's done
+    % automatically by Pandoc (which extracts ![](path) syntax from Markdown).
+    \usepackage{graphicx}
+    % Maintain compatibility with old templates. Remove in nbconvert 6.0
+    \let\Oldincludegraphics\includegraphics
+    % Ensure that by default, figures have no caption (until we provide a
+    % proper Figure object with a Caption API and a way to capture that
+    % in the conversion process - todo).
+    \usepackage{caption}
+    \DeclareCaptionFormat{nocaption}{}
+    \captionsetup{format=nocaption,aboveskip=0pt,belowskip=0pt}
+
+    \usepackage{float}
+    \floatplacement{figure}{H} % forces figures to be placed at the correct location
+    \usepackage{xcolor} % Allow colors to be defined
+    \usepackage{enumerate} % Needed for markdown enumerations to work
+    \usepackage{geometry} % Used to adjust the document margins
+    \usepackage{amsmath} % Equations
+    \usepackage{amssymb} % Equations
+    \usepackage{textcomp} % defines textquotesingle
+    % Hack from http://tex.stackexchange.com/a/47451/13684:
+    \AtBeginDocument{%
+        \def\PYZsq{\textquotesingle}% Upright quotes in Pygmentized code
+    }
+    \usepackage{upquote} % Upright quotes for verbatim code
+    \usepackage{eurosym} % defines \euro
+
+    \usepackage{iftex}
+    \ifPDFTeX
+        \usepackage[T1]{fontenc}
+        \IfFileExists{alphabeta.sty}{
+              \usepackage{alphabeta}
+          }{
+              \usepackage[mathletters]{ucs}
+              \usepackage[utf8x]{inputenc}
+          }
+    \else
+        \usepackage{fontspec}
+        \usepackage{unicode-math}
+    \fi
+
+    \usepackage{fancyvrb} % verbatim replacement that allows latex
+    \usepackage{grffile} % extends the file name processing of package graphics
+                         % to support a larger range
+    \makeatletter % fix for old versions of grffile with XeLaTeX
+    \@ifpackagelater{grffile}{2019/11/01}
+    {
+      % Do nothing on new versions
+    }
+    {
+      \def\Gread@@xetex#1{%
+        \IfFileExists{"\Gin@base".bb}%
+        {\Gread@eps{\Gin@base.bb}}%
+        {\Gread@@xetex@aux#1}%
+      }
+    }
+    \makeatother
+    \usepackage[Export]{adjustbox} % Used to constrain images to a maximum size
+    \adjustboxset{max size={0.9\linewidth}{0.9\paperheight}}
+
+    % The hyperref package gives us a pdf with properly built
+    % internal navigation ('pdf bookmarks' for the table of contents,
+    % internal cross-reference links, web links for URLs, etc.)
+    \usepackage{hyperref}
+    % The default LaTeX title has an obnoxious amount of whitespace. By default,
+    % titling removes some of it. It also provides customization options.
+    \usepackage{titling}
+    \usepackage{longtable} % longtable support required by pandoc >1.10
+    \usepackage{booktabs}  % table support for pandoc > 1.12.2
+    \usepackage{array}     % table support for pandoc >= 2.11.3
+    \usepackage{calc}      % table minipage width calculation for pandoc >= 2.11.1
+    \usepackage[inline]{enumitem} % IRkernel/repr support (it uses the enumerate* environment)
+    \usepackage[normalem]{ulem} % ulem is needed to support strikethroughs (\sout)
+                                % normalem makes italics be italics, not underlines
+    \usepackage{mathrsfs}
+    
+
+    
+    % Colors for the hyperref package
+    \definecolor{urlcolor}{rgb}{0,.145,.698}
+    \definecolor{linkcolor}{rgb}{.71,0.21,0.01}
+    \definecolor{citecolor}{rgb}{.12,.54,.11}
+
+    % ANSI colors
+    \definecolor{ansi-black}{HTML}{3E424D}
+    \definecolor{ansi-black-intense}{HTML}{282C36}
+    \definecolor{ansi-red}{HTML}{E75C58}
+    \definecolor{ansi-red-intense}{HTML}{B22B31}
+    \definecolor{ansi-green}{HTML}{00A250}
+    \definecolor{ansi-green-intense}{HTML}{007427}
+    \definecolor{ansi-yellow}{HTML}{DDB62B}
+    \definecolor{ansi-yellow-intense}{HTML}{B27D12}
+    \definecolor{ansi-blue}{HTML}{208FFB}
+    \definecolor{ansi-blue-intense}{HTML}{0065CA}
+    \definecolor{ansi-magenta}{HTML}{D160C4}
+    \definecolor{ansi-magenta-intense}{HTML}{A03196}
+    \definecolor{ansi-cyan}{HTML}{60C6C8}
+    \definecolor{ansi-cyan-intense}{HTML}{258F8F}
+    \definecolor{ansi-white}{HTML}{C5C1B4}
+    \definecolor{ansi-white-intense}{HTML}{A1A6B2}
+    \definecolor{ansi-default-inverse-fg}{HTML}{FFFFFF}
+    \definecolor{ansi-default-inverse-bg}{HTML}{000000}
+
+    % common color for the border for error outputs.
+    \definecolor{outerrorbackground}{HTML}{FFDFDF}
+
+    % commands and environments needed by pandoc snippets
+    % extracted from the output of `pandoc -s`
+    \providecommand{\tightlist}{%
+      \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+    \DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+    % Add ',fontsize=\small' for more characters per line
+    \newenvironment{Shaded}{}{}
+    \newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.56,0.13,0.00}{{#1}}}
+    \newcommand{\DecValTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\FloatTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\CharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\StringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\CommentTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textit{{#1}}}}
+    \newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{{#1}}}
+    \newcommand{\AlertTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.02,0.16,0.49}{{#1}}}
+    \newcommand{\RegionMarkerTok}[1]{{#1}}
+    \newcommand{\ErrorTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\NormalTok}[1]{{#1}}
+
+    % Additional commands for more recent versions of Pandoc
+    \newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.53,0.00,0.00}{{#1}}}
+    \newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.73,0.40,0.53}{{#1}}}
+    \newcommand{\ImportTok}[1]{{#1}}
+    \newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.73,0.13,0.13}{\textit{{#1}}}}
+    \newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\VariableTok}[1]{\textcolor[rgb]{0.10,0.09,0.49}{{#1}}}
+    \newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.40,0.40,0.40}{{#1}}}
+    \newcommand{\BuiltInTok}[1]{{#1}}
+    \newcommand{\ExtensionTok}[1]{{#1}}
+    \newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.74,0.48,0.00}{{#1}}}
+    \newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.49,0.56,0.16}{{#1}}}
+    \newcommand{\InformationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\WarningTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+
+
+    % Define a nice break command that doesn't care if a line doesn't already
+    % exist.
+    \def\br{\hspace*{\fill} \\* }
+    % Math Jax compatibility definitions
+    \def\gt{>}
+    \def\lt{<}
+    \let\Oldtex\TeX
+    \let\Oldlatex\LaTeX
+    \renewcommand{\TeX}{\textrm{\Oldtex}}
+    \renewcommand{\LaTeX}{\textrm{\Oldlatex}}
+    % Document parameters
+    % Document title
+    \title{EE2703 - Week 1}
+    
+    
+    
+    \author{Aayush Patel <ee21b003@smail.iitm.ac.in>}
+    
+    
+    
+% Pygments definitions
+\makeatletter
+\def\PY@reset{\let\PY@it=\relax \let\PY@bf=\relax%
+    \let\PY@ul=\relax \let\PY@tc=\relax%
+    \let\PY@bc=\relax \let\PY@ff=\relax}
+\def\PY@tok#1{\csname PY@tok@#1\endcsname}
+\def\PY@toks#1+{\ifx\relax#1\empty\else%
+    \PY@tok{#1}\expandafter\PY@toks\fi}
+\def\PY@do#1{\PY@bc{\PY@tc{\PY@ul{%
+    \PY@it{\PY@bf{\PY@ff{#1}}}}}}}
+\def\PY#1#2{\PY@reset\PY@toks#1+\relax+\PY@do{#2}}
+
+\@namedef{PY@tok@w}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.73,0.73}{##1}}}
+\@namedef{PY@tok@c}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cp}{\def\PY@tc##1{\textcolor[rgb]{0.61,0.40,0.00}{##1}}}
+\@namedef{PY@tok@k}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kp}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kt}{\def\PY@tc##1{\textcolor[rgb]{0.69,0.00,0.25}{##1}}}
+\@namedef{PY@tok@o}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@ow}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\@namedef{PY@tok@nb}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@nf}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@nc}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@nn}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@ne}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.80,0.25,0.22}{##1}}}
+\@namedef{PY@tok@nv}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@no}{\def\PY@tc##1{\textcolor[rgb]{0.53,0.00,0.00}{##1}}}
+\@namedef{PY@tok@nl}{\def\PY@tc##1{\textcolor[rgb]{0.46,0.46,0.00}{##1}}}
+\@namedef{PY@tok@ni}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.44,0.44,0.44}{##1}}}
+\@namedef{PY@tok@na}{\def\PY@tc##1{\textcolor[rgb]{0.41,0.47,0.13}{##1}}}
+\@namedef{PY@tok@nt}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@nd}{\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\@namedef{PY@tok@s}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sd}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@si}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.64,0.35,0.47}{##1}}}
+\@namedef{PY@tok@se}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.67,0.36,0.12}{##1}}}
+\@namedef{PY@tok@sr}{\def\PY@tc##1{\textcolor[rgb]{0.64,0.35,0.47}{##1}}}
+\@namedef{PY@tok@ss}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@sx}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@m}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@gh}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\@namedef{PY@tok@gu}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.50,0.00,0.50}{##1}}}
+\@namedef{PY@tok@gd}{\def\PY@tc##1{\textcolor[rgb]{0.63,0.00,0.00}{##1}}}
+\@namedef{PY@tok@gi}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.52,0.00}{##1}}}
+\@namedef{PY@tok@gr}{\def\PY@tc##1{\textcolor[rgb]{0.89,0.00,0.00}{##1}}}
+\@namedef{PY@tok@ge}{\let\PY@it=\textit}
+\@namedef{PY@tok@gs}{\let\PY@bf=\textbf}
+\@namedef{PY@tok@gp}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\@namedef{PY@tok@go}{\def\PY@tc##1{\textcolor[rgb]{0.44,0.44,0.44}{##1}}}
+\@namedef{PY@tok@gt}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.27,0.87}{##1}}}
+\@namedef{PY@tok@err}{\def\PY@bc##1{{\setlength{\fboxsep}{\string -\fboxrule}\fcolorbox[rgb]{1.00,0.00,0.00}{1,1,1}{\strut ##1}}}}
+\@namedef{PY@tok@kc}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kd}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kn}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kr}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@bp}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@fm}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@vc}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vg}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vi}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vm}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@sa}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sb}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sc}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@dl}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@s2}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sh}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@s1}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@mb}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mf}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mh}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mi}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@il}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mo}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@ch}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cm}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cpf}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@c1}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cs}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+
+\def\PYZbs{\char`\\}
+\def\PYZus{\char`\_}
+\def\PYZob{\char`\{}
+\def\PYZcb{\char`\}}
+\def\PYZca{\char`\^}
+\def\PYZam{\char`\&}
+\def\PYZlt{\char`\<}
+\def\PYZgt{\char`\>}
+\def\PYZsh{\char`\#}
+\def\PYZpc{\char`\%}
+\def\PYZdl{\char`\$}
+\def\PYZhy{\char`\-}
+\def\PYZsq{\char`\'}
+\def\PYZdq{\char`\"}
+\def\PYZti{\char`\~}
+% for compatibility with earlier versions
+\def\PYZat{@}
+\def\PYZlb{[}
+\def\PYZrb{]}
+\makeatother
+
+
+    % For linebreaks inside Verbatim environment from package fancyvrb.
+    \makeatletter
+        \newbox\Wrappedcontinuationbox
+        \newbox\Wrappedvisiblespacebox
+        \newcommand*\Wrappedvisiblespace {\textcolor{red}{\textvisiblespace}}
+        \newcommand*\Wrappedcontinuationsymbol {\textcolor{red}{\llap{\tiny$\m@th\hookrightarrow$}}}
+        \newcommand*\Wrappedcontinuationindent {3ex }
+        \newcommand*\Wrappedafterbreak {\kern\Wrappedcontinuationindent\copy\Wrappedcontinuationbox}
+        % Take advantage of the already applied Pygments mark-up to insert
+        % potential linebreaks for TeX processing.
+        %        {, <, #, %, $, ' and ": go to next line.
+        %        _, }, ^, &, >, - and ~: stay at end of broken line.
+        % Use of \textquotesingle for straight quote.
+        \newcommand*\Wrappedbreaksatspecials {%
+            \def\PYGZus{\discretionary{\char`\_}{\Wrappedafterbreak}{\char`\_}}%
+            \def\PYGZob{\discretionary{}{\Wrappedafterbreak\char`\{}{\char`\{}}%
+            \def\PYGZcb{\discretionary{\char`\}}{\Wrappedafterbreak}{\char`\}}}%
+            \def\PYGZca{\discretionary{\char`\^}{\Wrappedafterbreak}{\char`\^}}%
+            \def\PYGZam{\discretionary{\char`\&}{\Wrappedafterbreak}{\char`\&}}%
+            \def\PYGZlt{\discretionary{}{\Wrappedafterbreak\char`\<}{\char`\<}}%
+            \def\PYGZgt{\discretionary{\char`\>}{\Wrappedafterbreak}{\char`\>}}%
+            \def\PYGZsh{\discretionary{}{\Wrappedafterbreak\char`\#}{\char`\#}}%
+            \def\PYGZpc{\discretionary{}{\Wrappedafterbreak\char`\%}{\char`\%}}%
+            \def\PYGZdl{\discretionary{}{\Wrappedafterbreak\char`\$}{\char`\$}}%
+            \def\PYGZhy{\discretionary{\char`\-}{\Wrappedafterbreak}{\char`\-}}%
+            \def\PYGZsq{\discretionary{}{\Wrappedafterbreak\textquotesingle}{\textquotesingle}}%
+            \def\PYGZdq{\discretionary{}{\Wrappedafterbreak\char`\"}{\char`\"}}%
+            \def\PYGZti{\discretionary{\char`\~}{\Wrappedafterbreak}{\char`\~}}%
+        }
+        % Some characters . , ; ? ! / are not pygmentized.
+        % This macro makes them "active" and they will insert potential linebreaks
+        \newcommand*\Wrappedbreaksatpunct {%
+            \lccode`\~`\.\lowercase{\def~}{\discretionary{\hbox{\char`\.}}{\Wrappedafterbreak}{\hbox{\char`\.}}}%
+            \lccode`\~`\,\lowercase{\def~}{\discretionary{\hbox{\char`\,}}{\Wrappedafterbreak}{\hbox{\char`\,}}}%
+            \lccode`\~`\;\lowercase{\def~}{\discretionary{\hbox{\char`\;}}{\Wrappedafterbreak}{\hbox{\char`\;}}}%
+            \lccode`\~`\:\lowercase{\def~}{\discretionary{\hbox{\char`\:}}{\Wrappedafterbreak}{\hbox{\char`\:}}}%
+            \lccode`\~`\?\lowercase{\def~}{\discretionary{\hbox{\char`\?}}{\Wrappedafterbreak}{\hbox{\char`\?}}}%
+            \lccode`\~`\!\lowercase{\def~}{\discretionary{\hbox{\char`\!}}{\Wrappedafterbreak}{\hbox{\char`\!}}}%
+            \lccode`\~`\/\lowercase{\def~}{\discretionary{\hbox{\char`\/}}{\Wrappedafterbreak}{\hbox{\char`\/}}}%
+            \catcode`\.\active
+            \catcode`\,\active
+            \catcode`\;\active
+            \catcode`\:\active
+            \catcode`\?\active
+            \catcode`\!\active
+            \catcode`\/\active
+            \lccode`\~`\~
+        }
+    \makeatother
+
+    \let\OriginalVerbatim=\Verbatim
+    \makeatletter
+    \renewcommand{\Verbatim}[1][1]{%
+        %\parskip\z@skip
+        \sbox\Wrappedcontinuationbox {\Wrappedcontinuationsymbol}%
+        \sbox\Wrappedvisiblespacebox {\FV@SetupFont\Wrappedvisiblespace}%
+        \def\FancyVerbFormatLine ##1{\hsize\linewidth
+            \vtop{\raggedright\hyphenpenalty\z@\exhyphenpenalty\z@
+                \doublehyphendemerits\z@\finalhyphendemerits\z@
+                \strut ##1\strut}%
+        }%
+        % If the linebreak is at a space, the latter will be displayed as visible
+        % space at end of first line, and a continuation symbol starts next line.
+        % Stretch/shrink are however usually zero for typewriter font.
+        \def\FV@Space {%
+            \nobreak\hskip\z@ plus\fontdimen3\font minus\fontdimen4\font
+            \discretionary{\copy\Wrappedvisiblespacebox}{\Wrappedafterbreak}
+            {\kern\fontdimen2\font}%
+        }%
+
+        % Allow breaks at special characters using \PYG... macros.
+        \Wrappedbreaksatspecials
+        % Breaks at punctuation characters . , ; ? ! and / need catcode=\active
+        \OriginalVerbatim[#1,codes*=\Wrappedbreaksatpunct]%
+    }
+    \makeatother
+
+    % Exact colors from NB
+    \definecolor{incolor}{HTML}{303F9F}
+    \definecolor{outcolor}{HTML}{D84315}
+    \definecolor{cellborder}{HTML}{CFCFCF}
+    \definecolor{cellbackground}{HTML}{F7F7F7}
+
+    % prompt
+    \makeatletter
+    \newcommand{\boxspacing}{\kern\kvtcb@left@rule\kern\kvtcb@boxsep}
+    \makeatother
+    \newcommand{\prompt}[4]{
+        {\ttfamily\llap{{\color{#2}[#3]:\hspace{3pt}#4}}\vspace{-\baselineskip}}
+    }
+    
+
+    
+    % Prevent overflowing lines due to hard-to-break entities
+    \sloppy
+    % Setup hyperref package
+    \hypersetup{
+      breaklinks=true,  % so long urls are correctly broken across lines
+      colorlinks=true,
+      urlcolor=urlcolor,
+      linkcolor=linkcolor,
+      citecolor=citecolor,
+      }
+    % Slightly bigger margins than the latex defaults
+    
+    \geometry{verbose,tmargin=1in,bmargin=1in,lmargin=1in,rmargin=1in}
+    
+    
+
+\begin{document}
+    
+    \maketitle
+    
+    
+
+    
+    \hypertarget{document-metadata}{%
+\section{Document metadata}\label{document-metadata}}
+
+\begin{quote}
+\emph{Problem statement: modify this document so that the author name
+reflects your name and roll number. Explain the changes you needed to
+make here. If you use other approaches such as LaTeX to generate the
+PDF, explain the differences between the notebook approach and what you
+have used.}
+\end{quote}
+
+    From the Edit Menu, I have changed the notebook metadata to my
+credentials. \texttt{AAYUSH\ PATEL}
+\href{mailto:ee21b003@smail.iitm.ac.in}{\nolinkurl{ee21b003@smail.iitm.ac.in}}
+
+    \hypertarget{basic-data-types}{%
+\section{Basic Data Types}\label{basic-data-types}}
+
+    \hypertarget{numerical-types}{%
+\subsection{Numerical types}\label{numerical-types}}
+
+    \begin{quote}
+\textbf{Probelm} : Explain the codes given below
+\end{quote}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{2}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n+nb}{print}\PY{p}{(}\PY{l+m+mi}{12} \PY{o}{/} \PY{l+m+mi}{5}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+2.4
+    \end{Verbatim}
+
+    \textbf{Explanation} : This statement performs a \emph{division} of two
+\emph{integers} and returns a \emph{float} value
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{3}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n+nb}{print}\PY{p}{(}\PY{l+m+mi}{12} \PY{o}{/}\PY{o}{/} \PY{l+m+mi}{5}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+2
+    \end{Verbatim}
+
+    \textbf{Explanation} : This is a \emph{floor division} which returns an
+\emph{integer} value, i.e.~the quotient of the division.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{4}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{a}\PY{o}{=}\PY{n}{b}\PY{o}{=}\PY{l+m+mi}{10}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{a}\PY{p}{,}\PY{n}{b}\PY{p}{,}\PY{n}{a}\PY{o}{/}\PY{n}{b}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+10 10 1.0
+    \end{Verbatim}
+
+    \textbf{Explanation} : This statement prints a, b and a/b where a/b will
+be a floating point datatype. Print statement has \textbf{sep=" "} by
+default, i.e.~all those variables will be printed with a \emph{blank
+space} between them.
+
+    \hypertarget{strings-and-related-operations}{%
+\subsection{Strings and related
+operations}\label{strings-and-related-operations}}
+
+    \begin{quote}
+\textbf{Problem} : Explain the code given below
+\end{quote}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{5}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{a} \PY{o}{=} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Hello }\PY{l+s+s2}{\PYZdq{}}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{a}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Hello
+    \end{Verbatim}
+
+    \textbf{Explanation} : This changes the variable \textbf{a} from 10
+(\emph{integer}) to ``Hello'' (\emph{string}) and prints it.
+
+    \begin{quote}
+\textbf{Problem} : Output should contain ``Hello 10''
+\end{quote}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{6}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{try}\PY{p}{:}
+    \PY{n+nb}{print}\PY{p}{(}\PY{n}{a}\PY{o}{+}\PY{n}{b}\PY{p}{)}  \PY{c+c1}{\PYZsh{} Output should contain \PYZdq{}Hello 10\PYZdq{} }
+\PY{k}{except}\PY{p}{:} 
+    \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Error in the print statement.}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{k}{finally}\PY{p}{:}
+    \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{The correct way to print a+b is}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+    \PY{n+nb}{print}\PY{p}{(}\PY{n}{a}\PY{p}{,}\PY{n}{b}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Error in the print statement.
+The correct way to print a+b is
+Hello  10
+    \end{Verbatim}
+
+    \textbf{Explanation} : The statement print(a+b) was \textbf{wrong}
+because we can not add an \emph{integer} and a \emph{string}. To solve
+this we have two ways : - Convert the integer into a \emph{string}
+datatype then concatenate both \emph{strings}. - use print(a,b) .This
+will print the \emph{integer} and the \emph{string} with a blank space
+because the parameter sep of print statement has " " by default
+(i.e.~sep=" ")
+
+    \begin{quote}
+\textbf{Problem} : Print out a line of 40 `-' signs (to look like one
+long line) Then print the number 42 so that it is right justified to the
+end of the above line. Then print one more line of length 40, but with
+the pattern `*-*-*-'
+\end{quote}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{7}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{line1}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{\PYZhy{}}\PY{l+s+s2}{\PYZdq{}}\PY{o}{*}\PY{l+m+mi}{40}         \PY{c+c1}{\PYZsh{}String Multiplication}
+\PY{n}{line2}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{ }\PY{l+s+s2}{\PYZdq{}}\PY{o}{*}\PY{l+m+mi}{40} \PY{o}{+} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{42}\PY{l+s+s2}{\PYZdq{}}
+\PY{n}{line3}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{*\PYZhy{}}\PY{l+s+s2}{\PYZdq{}}\PY{o}{*}\PY{l+m+mi}{20}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{line1}\PY{p}{,}\PY{n}{line2}\PY{p}{,}\PY{n}{line3}\PY{p}{,}\PY{n}{sep}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+----------------------------------------
+                                        42
+*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
+    \end{Verbatim}
+
+    \textbf{Explanation} : This is the concept of \emph{string
+multiplication} where a string is copied and concatenated the number of
+times we want. This output can also have been obtained using loops annd
+printing the characters one by one but String Multiplication makes this
+process simpler.
+
+    \begin{quote}
+\textbf{Problem} : Explain the given code
+\end{quote}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{8}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{The variable }\PY{l+s+s2}{\PYZsq{}}\PY{l+s+s2}{a}\PY{l+s+s2}{\PYZsq{}}\PY{l+s+s2}{ has the value }\PY{l+s+si}{\PYZob{}}\PY{n}{a}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{ and }\PY{l+s+s2}{\PYZsq{}}\PY{l+s+s2}{b}\PY{l+s+s2}{\PYZsq{}}\PY{l+s+s2}{ has the value }\PY{l+s+si}{\PYZob{}}\PY{n}{b}\PY{l+s+si}{:}\PY{l+s+s2}{\PYZgt{}10}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+The variable 'a' has the value Hello  and 'b' has the value         10
+    \end{Verbatim}
+
+    \textbf{Explanation} : This is an example of \textbf{F-strings} in
+python. F-strings provide a concise and convenient way to embed python
+expressions inside string literals for formatting. F-strings make
+\emph{string interpolation} simpler.
+
+    \begin{quote}
+\textbf{Problem} : Create a list of dictionaries.
+\end{quote}
+
+In the dictionaries each entry in the list has two keys: 
+\begin{itemize}
+    \item \textbf{id}:
+this will be the ID number of a course, for example `EE2703' 
+    \item \textbf{name}: this will be the name, for example `Applied Programming
+Lab'
+\end{itemize}
+
+Add 3 entries:
+\begin{itemize}
+    \item 
+EE2703 -\textgreater{} Applied Programming Lab
+\item
+EE2003 -\textgreater{} Computer Organization 
+\item
+EE5311 -\textgreater{}
+Digital IC Design
+\end{itemize}
+
+Then print out the entries in a neatly formatted table
+where the ID number is \emph{left justified} to 10 spaces and the name
+is \emph{right justified} to 40 spaces.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{9}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{courses\PYZus{}list}\PY{o}{=}\PY{p}{[}
+    \PY{p}{\PYZob{}}
+        \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{id}\PY{l+s+s2}{\PYZdq{}}   \PY{p}{:} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{EE2703}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}
+        \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{name}\PY{l+s+s2}{\PYZdq{}} \PY{p}{:} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Applied Programming Lab}\PY{l+s+s2}{\PYZdq{}}
+    \PY{p}{\PYZcb{}}\PY{p}{,}
+    \PY{p}{\PYZob{}}
+        \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{id}\PY{l+s+s2}{\PYZdq{}}   \PY{p}{:} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{EE2003}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}
+        \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{name}\PY{l+s+s2}{\PYZdq{}} \PY{p}{:} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Computer Organization}\PY{l+s+s2}{\PYZdq{}}
+    \PY{p}{\PYZcb{}}\PY{p}{,}
+    \PY{p}{\PYZob{}}
+        \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{id}\PY{l+s+s2}{\PYZdq{}}   \PY{p}{:} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{EE5131}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}
+        \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{name}\PY{l+s+s2}{\PYZdq{}} \PY{p}{:} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Digital IC Design}\PY{l+s+s2}{\PYZdq{}}
+    \PY{p}{\PYZcb{}}
+\PY{p}{]}
+
+\PY{k}{for} \PY{n}{course\PYZus{}dict} \PY{o+ow}{in} \PY{n}{courses\PYZus{}list}\PY{p}{:}
+    \PY{n+nb}{id}\PY{o}{=}\PY{n}{course\PYZus{}dict}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{id}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}
+    \PY{n}{name}\PY{o}{=}\PY{n}{course\PYZus{}dict}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{name}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}
+    \PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+si}{\PYZob{}}\PY{n+nb}{id}\PY{+w}{ }\PY{l+s+si}{:}\PY{l+s+s2}{ \PYZlt{}10}\PY{l+s+si}{\PYZcb{}}\PY{l+s+si}{\PYZob{}}\PY{n}{name}\PY{+w}{ }\PY{l+s+si}{:}\PY{l+s+s2}{ \PYZgt{}40}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+EE2703                     Applied Programming Lab
+EE2003                       Computer Organization
+EE5131                           Digital IC Design
+    \end{Verbatim}
+
+    \textbf{Explanation} : The list - \emph{courses\_list} contains
+dictionaries which store the \emph{id} and \emph{name} of courses which
+are printed here using for loop and F-strings.
+
+    \hypertarget{functions-for-general-manipulation}{%
+\section{Functions for general
+manipulation}\label{functions-for-general-manipulation}}
+
+    \begin{quote}
+\textbf{Probelm} : Write a function with name `twosc' that will take a
+single integer as input, and print out the binary representation of the
+number as output. The function should take one other optional parameter
+N which represents the number of bits. The final result should always
+contain N characters as output (either 0 or 1) and should use two's
+complement to represent the number if it is negative. Examples:
+twosc(10): 0000000000001010 twosc(-10): 1111111111110110 twosc(-20, 8):
+11101100 Use only functions from the Python standard library to do this.
+\end{quote}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{10}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{def} \PY{n+nf}{twosc}\PY{p}{(}\PY{n}{x}\PY{p}{,} \PY{n}{N}\PY{o}{=}\PY{l+m+mi}{16}\PY{p}{)}\PY{p}{:}
+    \PY{c+c1}{\PYZsh{}Firstly check if x is an integer.}
+    \PY{k}{try}\PY{p}{:}
+        \PY{n}{x}\PY{o}{=}\PY{n+nb}{int}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+        \PY{n}{bin\PYZus{}string}\PY{o}{=}\PY{n+nb}{bin}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+        \PY{n}{negative}\PY{o}{=}\PY{k+kc}{False}
+        \PY{c+c1}{\PYZsh{}Process the bin\PYZus{}string to remove the intial \PYZdq{}0b\PYZdq{} or \PYZdq{}\PYZhy{}0b\PYZdq{}}
+        \PY{k}{if}\PY{p}{(}\PY{n}{bin\PYZus{}string}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{o}{==}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZhy{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{:}
+            \PY{n}{bin\PYZus{}string}\PY{o}{=}\PY{n}{bin\PYZus{}string}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{:}\PY{p}{]}
+            \PY{n}{negative}\PY{o}{=}\PY{k+kc}{True}
+        \PY{n}{bin\PYZus{}val}\PY{o}{=}\PY{n}{bin\PYZus{}string}\PY{p}{[}\PY{l+m+mi}{2}\PY{p}{:}\PY{p}{]}
+        \PY{c+c1}{\PYZsh{}Get the required number of bits N}
+        \PY{k}{if}\PY{p}{(}\PY{n+nb}{len}\PY{p}{(}\PY{n}{bin\PYZus{}val}\PY{p}{)}\PY{o}{\PYZgt{}}\PY{n}{N}\PY{p}{)}\PY{p}{:}
+            \PY{n}{processed\PYZus{}string}\PY{o}{=}\PY{n}{bin\PYZus{}val}\PY{p}{[}\PY{o}{\PYZhy{}}\PY{n}{N}\PY{p}{:}\PY{p}{]}
+        \PY{k}{else}\PY{p}{:}
+            \PY{n}{l}\PY{o}{=}\PY{n}{N}\PY{o}{\PYZhy{}}\PY{n+nb}{len}\PY{p}{(}\PY{n}{bin\PYZus{}val}\PY{p}{)}
+            \PY{n}{processed\PYZus{}string}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{0}\PY{l+s+s2}{\PYZdq{}}\PY{o}{*}\PY{n}{l}\PY{o}{+}\PY{n}{bin\PYZus{}val}
+        \PY{c+c1}{\PYZsh{}Now deal with it if x is negative}
+        \PY{k}{if}\PY{p}{(}\PY{n}{negative}\PY{o}{==}\PY{k+kc}{True}\PY{p}{)}\PY{p}{:}
+            \PY{c+c1}{\PYZsh{}Take 2\PYZsq{}s Comliment}
+            \PY{n}{ones\PYZus{}compliment}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{\PYZdq{}}
+            \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n+nb}{len}\PY{p}{(}\PY{n}{processed\PYZus{}string}\PY{p}{)}\PY{p}{)}\PY{p}{:}
+                \PY{k}{if}\PY{p}{(}\PY{n}{processed\PYZus{}string}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{o}{==}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{0}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{:}
+                    \PY{n}{ones\PYZus{}compliment}\PY{o}{+}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{1}\PY{l+s+s2}{\PYZdq{}}
+                \PY{k}{else}\PY{p}{:}
+                    \PY{n}{ones\PYZus{}compliment}\PY{o}{+}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{0}\PY{l+s+s2}{\PYZdq{}}
+            \PY{n}{carry}\PY{o}{=}\PY{l+m+mi}{1}
+            \PY{n}{twos\PYZus{}compliment}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{\PYZdq{}}
+            \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n+nb}{len}\PY{p}{(}\PY{n}{ones\PYZus{}compliment}\PY{p}{)}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{,}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{,}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{)}\PY{p}{:}
+                \PY{k}{if}\PY{p}{(}\PY{n}{carry}\PY{o}{==}\PY{l+m+mi}{1}\PY{p}{)}\PY{p}{:}
+                    \PY{k}{if}\PY{p}{(}\PY{n}{ones\PYZus{}compliment}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{o}{==}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{0}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{:}
+                        \PY{n}{twos\PYZus{}compliment}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{1}\PY{l+s+s1}{\PYZsq{}}\PY{o}{+}\PY{n}{twos\PYZus{}compliment}
+                        \PY{n}{carry}\PY{o}{=}\PY{l+m+mi}{0}
+                    \PY{k}{else}\PY{p}{:}
+                        \PY{n}{twos\PYZus{}compliment}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{0}\PY{l+s+s1}{\PYZsq{}}\PY{o}{+}\PY{n}{twos\PYZus{}compliment}
+                        \PY{n}{carry}\PY{o}{=}\PY{l+m+mi}{1}
+                \PY{k}{else}\PY{p}{:}
+                    \PY{n}{twos\PYZus{}compliment}\PY{o}{=}\PY{n}{ones\PYZus{}compliment}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{o}{+}\PY{n}{twos\PYZus{}compliment}
+            \PY{n+nb}{print}\PY{p}{(}\PY{n}{twos\PYZus{}compliment}\PY{p}{)}
+        \PY{k}{else}\PY{p}{:}
+            \PY{n+nb}{print}\PY{p}{(}\PY{n}{processed\PYZus{}string}\PY{p}{)}
+    \PY{k}{except}\PY{p}{:}
+        \PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+si}{\PYZob{}}\PY{n}{x}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{ is not a integer.}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n}{twosc}\PY{p}{(}\PY{l+m+mi}{10}\PY{p}{)}
+\PY{n}{twosc}\PY{p}{(}\PY{o}{\PYZhy{}}\PY{l+m+mi}{10}\PY{p}{)}
+\PY{n}{twosc}\PY{p}{(}\PY{o}{\PYZhy{}}\PY{l+m+mi}{20}\PY{p}{,}\PY{l+m+mi}{8}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+0000000000001010
+1111111111110110
+11101100
+    \end{Verbatim}
+
+    \textbf{Explanation} : After confirming that the object \textbf{x} which
+is passed as an argument in the function \texttt{twosc()} is indeed an
+\emph{integer}, I used the inbuilt \textbf{bin()} function of the
+\emph{Python Standard Library.} This returns a string -
+\emph{bin\_string} but this string has prefix \textbf{`0b'} for positive
+numbers and \textbf{`-0b'} for negative numbers, which have to be
+removed. Now add extra 0s in the beginning if \textbf{N} is greater than
+the length of this string.
+
+Print this string if \textbf{x} was positive. Otherwise firstly take
+\emph{One's Compliment} by replacing 0s with 1s and 1s with 0s. Then
+Take \emph{Two's Compliment} by adding 1 to the number obtained. This
+can be done bitwise by checking :
+\begin{itemize}
+    \item 
+\textbf{0 + 1 = 1 (carry = 0)}
+    \item
+\textbf{1 + 1 = 0 (carry = 1)} 
+    \item
+\textbf{1 + 1 + 1 = 1 (carry = 1)}.
+\end{itemize}
+
+    \hypertarget{list-comprehensions-and-decorators}{%
+\section{List comprehensions and
+decorators}\label{list-comprehensions-and-decorators}}
+
+    \begin{quote}
+\textbf{Problem} : Explain the given code
+\end{quote}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{11}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Explain the output you see below}
+\PY{p}{[}\PY{n}{x}\PY{o}{*}\PY{n}{x} \PY{k}{for} \PY{n}{x} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{10}\PY{p}{)} \PY{k}{if} \PY{n}{x}\PY{o}{\PYZpc{}}\PY{k}{2} == 0]
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{11}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+[0, 4, 16, 36, 64]
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \textbf{Explanation} : This statement generates a \emph{list}.
+
+Then for statement iterates through all the numbers from \emph{x = 0 to
+9}, and the if statement checks whether \textbf{x} is even. If
+\textbf{x} is even then \textbf{x} times \textbf{x} is appened to the
+list. This method of generating list is called
+\texttt{List\ Comphrension} and this is used to shorten the code a bit
+for better aesthetics.
+
+    \begin{quote}
+\textbf{Problem} : Explain the given code
+\end{quote}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{12}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Explain the output you see below}
+\PY{n}{matrix} \PY{o}{=} \PY{p}{[}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{2}\PY{p}{,}\PY{l+m+mi}{3}\PY{p}{]}\PY{p}{,} \PY{p}{[}\PY{l+m+mi}{4}\PY{p}{,}\PY{l+m+mi}{5}\PY{p}{,}\PY{l+m+mi}{6}\PY{p}{]}\PY{p}{,} \PY{p}{[}\PY{l+m+mi}{7}\PY{p}{,}\PY{l+m+mi}{8}\PY{p}{,}\PY{l+m+mi}{9}\PY{p}{]}\PY{p}{]}
+\PY{p}{[}\PY{n}{v} \PY{k}{for} \PY{n}{row} \PY{o+ow}{in} \PY{n}{matrix} \PY{k}{for} \PY{n}{v} \PY{o+ow}{in} \PY{n}{row}\PY{p}{]}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{12}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+[1, 2, 3, 4, 5, 6, 7, 8, 9]
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \textbf{Explanation} : This statement runs a \emph{nested loop}, i.e.~a
+loop inside another loop. It iterates through matrix which is a two
+dimensional list and returns a list \emph{row}. Now the second loop
+iterates through the elements of the list \emph{row} and appends them to
+a \emph{list}.
+
+    \hypertarget{prime-numbers}{%
+\subsection{Prime Numbers}\label{prime-numbers}}
+
+    \begin{quote}
+\textbf{Problem} : Define a function \texttt{is\_prime(x)} that will
+return True if a number is prime, or False otherwise. Use it to write a
+one-line statement that will print all prime numbers between 1 and 100.
+\end{quote}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{13}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{def} \PY{n+nf}{is\PYZus{}prime}\PY{p}{(}\PY{n}{x}\PY{p}{)}\PY{p}{:}
+    \PY{k}{if}\PY{p}{(}\PY{n}{x}\PY{o}{\PYZlt{}}\PY{l+m+mi}{2}\PY{p}{)}\PY{p}{:}
+        \PY{k}{return} \PY{k+kc}{False}
+    \PY{n}{i}\PY{o}{=}\PY{l+m+mi}{2}
+    \PY{k}{while}\PY{p}{(}\PY{k+kc}{True}\PY{p}{)}\PY{p}{:}
+        \PY{k}{if}\PY{p}{(}\PY{n}{i}\PY{o}{*}\PY{n}{i}\PY{o}{\PYZgt{}}\PY{n}{x}\PY{p}{)}\PY{p}{:}
+            \PY{k}{break}
+        \PY{k}{if}\PY{p}{(}\PY{n}{x}\PY{o}{\PYZpc{}}\PY{k}{i}==0):
+            \PY{k}{return} \PY{k+kc}{False}
+        \PY{n}{i}\PY{o}{+}\PY{o}{=}\PY{l+m+mi}{1}
+    \PY{k}{return} \PY{k+kc}{True}
+
+\PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{101}\PY{p}{)}\PY{p}{:}
+    \PY{k}{if}\PY{p}{(}\PY{n}{is\PYZus{}prime}\PY{p}{(}\PY{n}{i}\PY{p}{)}\PY{p}{)}\PY{p}{:}
+        \PY{n+nb}{print}\PY{p}{(}\PY{n}{i}\PY{p}{,}\PY{n}{end}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{ }\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+2 3 5 7 11 13 17 19 23 29 31 37 41 43 47 53 59 61 67 71 73 79 83 89 97
+    \end{Verbatim}
+
+    \textbf{Explanation} : The function \texttt{is\_prime()} iterates
+through all the numbers from 2 to \emph{square root} of n to check if
+any pair of integers other than 1 and n exists that divides n. And I am
+calling that function for all number from 1 to 100 to check if they are
+prime or not.
+
+    \hypertarget{function-as-argument}{%
+\subsection{Function as Argument}\label{function-as-argument}}
+
+    \begin{quote}
+\textbf{Problem} : Explain the given code
+\end{quote}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{14}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{def} \PY{n+nf}{f1}\PY{p}{(}\PY{n}{x}\PY{p}{)}\PY{p}{:}
+    \PY{k}{return} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{happy }\PY{l+s+s2}{\PYZdq{}} \PY{o}{+} \PY{n}{x}
+\PY{k}{def} \PY{n+nf}{f2}\PY{p}{(}\PY{n}{f}\PY{p}{)}\PY{p}{:}
+    \PY{k}{def} \PY{n+nf}{wrapper}\PY{p}{(}\PY{o}{*}\PY{n}{args}\PY{p}{,} \PY{o}{*}\PY{o}{*}\PY{n}{kwargs}\PY{p}{)}\PY{p}{:}
+        \PY{k}{return} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Hello }\PY{l+s+s2}{\PYZdq{}} \PY{o}{+} \PY{n}{f}\PY{p}{(}\PY{o}{*}\PY{n}{args}\PY{p}{,} \PY{o}{*}\PY{o}{*}\PY{n}{kwargs}\PY{p}{)} \PY{o}{+} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{ world}\PY{l+s+s2}{\PYZdq{}}
+    \PY{k}{return} \PY{n}{wrapper}
+\PY{n}{f3} \PY{o}{=} \PY{n}{f2}\PY{p}{(}\PY{n}{f1}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{f3}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{flappy}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Hello happy flappy world
+    \end{Verbatim}
+
+    \textbf{Explanation} : After defining the fucntions \textbf{f1()} and
+\textbf{f2()}, a \textbf{\emph{wrapper function}} \textbf{f3()} is
+defined as \textbf{f2(f1)}. So the argument passed inside \textbf{f3()}
+will first go in \textbf{f1()} and the returned object will go as
+argument in the function \textbf{f2()}. Here ``flappy'' is passed inside
+f1() to return ``happy flappy''. Now this is passed inside f2(). *args
+is used to take arguments of variable length and *kwargs is used to take
+key-value arguments of variable length.
+
+    \begin{quote}
+\textbf{Problem} : Explain the given code
+\end{quote}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{15}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n+nd}{@f2}
+\PY{k}{def} \PY{n+nf}{f4}\PY{p}{(}\PY{n}{x}\PY{p}{)}\PY{p}{:}
+    \PY{k}{return} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{nappy }\PY{l+s+s2}{\PYZdq{}} \PY{o}{+} \PY{n}{x}
+
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{f4}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{flappy}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Hello nappy flappy world
+    \end{Verbatim}
+
+    \textbf{Explanation} : This is a simpler way to implement the same thing
+as above, by wrapping one function inside the other, using a
+decorator.Decorators allow us to wrap another function in order to
+extend the behavior of the wrapped function, without permanently
+modifying it.
+
+    \hypertarget{file-io}{%
+\section{File IO}\label{file-io}}
+
+    \begin{quote}
+\textbf{Probelm} : Write a function to generate \emph{prime numbers}
+from \textbf{1 to N} (input) and write them to a file (second argument).
+You can reuse the \emph{prime detection function} written earlier.
+\end{quote}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{16}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{def} \PY{n+nf}{write\PYZus{}primes}\PY{p}{(}\PY{n}{N}\PY{p}{,} \PY{n}{filename}\PY{p}{)}\PY{p}{:}
+    \PY{n}{f}\PY{o}{=}\PY{n+nb}{open}\PY{p}{(}\PY{n}{filename}\PY{p}{,}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{w}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+    \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,}\PY{n}{N}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{)}\PY{p}{:}
+        \PY{k}{if}\PY{p}{(}\PY{n}{is\PYZus{}prime}\PY{p}{(}\PY{n}{i}\PY{p}{)}\PY{p}{)}\PY{p}{:}
+            \PY{n}{f}\PY{o}{.}\PY{n}{write}\PY{p}{(}\PY{n+nb}{str}\PY{p}{(}\PY{n}{i}\PY{p}{)}\PY{o}{+}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{ }\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+    \PY{n}{f}\PY{o}{.}\PY{n}{close}\PY{p}{(}\PY{p}{)}
+    \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Successfully written to the file.}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n}{write\PYZus{}primes}\PY{p}{(}\PY{l+m+mi}{100}\PY{p}{,}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{prime.txt}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Successfully written to the file.
+    \end{Verbatim}
+
+    \textbf{Explanation} : Firstly we create a \emph{file object} (file
+handle) \textbf{f}, which opens the file \textbf{\emph{prime.txt}} in
+\textbf{write mode}. If this file does not exists then it creates a new
+file with that name in write mode. Then it iterates through all number
+from \textbf{1 to N} and prints them to a file if it a prime. The
+statement \emph{f.close()} closes the file and writes to the file if
+there is any data in the \emph{buffer} of the file handle.
+
+    \hypertarget{exceptions}{%
+\section{Exceptions}\label{exceptions}}
+
+    \begin{quote}
+\textbf{Problem} : Write a function that takes in a number as input, and
+prints out whether it is a prime or not. If the input is not an integer,
+print an appropriate error message. Use \texttt{exceptions} to detect
+problems.
+\end{quote}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{17}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{def} \PY{n+nf}{check\PYZus{}prime}\PY{p}{(}\PY{n}{x}\PY{p}{)}\PY{p}{:}
+    \PY{k}{try}\PY{p}{:}
+        \PY{n}{x}\PY{o}{=}\PY{n+nb}{int}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+        \PY{k}{if}\PY{p}{(}\PY{n}{x}\PY{o}{\PYZlt{}}\PY{l+m+mi}{0}\PY{p}{)}\PY{p}{:}
+            \PY{k}{raise} \PY{n+ne}{Exception}
+        \PY{k}{if}\PY{p}{(}\PY{n}{is\PYZus{}prime}\PY{p}{(}\PY{n}{x}\PY{p}{)}\PY{p}{)}\PY{p}{:}
+            \PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+si}{\PYZob{}}\PY{n}{x}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{ is prime.}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+        \PY{k}{else}\PY{p}{:}
+            \PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+si}{\PYZob{}}\PY{n}{x}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{ is not prime.}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+    \PY{k}{except}\PY{p}{:}
+        \PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+si}{\PYZob{}}\PY{n}{x}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{ is not a positive integer}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n}{x} \PY{o}{=} \PY{n+nb}{input}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Enter a number: }\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{check\PYZus{}prime}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+5 is prime.
+    \end{Verbatim}
+
+    \textbf{Explanation} : x is taken input as a string. In the function
+\texttt{check\_prime()} ,the type conversion to int raises an error if x
+was a \emph{non integer} object like \emph{float} or \emph{double}. If x
+is smaller than 0 then also the error is raised. If x is a positive
+integer then it checks if it is prime or not and prints the
+corresponding statements.
+
+
+    % Add a bibliography block to the postdoc
+    
+    
+    
+\end{document}
